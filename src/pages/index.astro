@@ -11,6 +11,8 @@ import { useTranslations } from "@/i18n";
 
 const t = useTranslations();
 
+export const prerender = true
+
 const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
 ---
 

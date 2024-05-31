@@ -24,8 +24,8 @@ const full = POST_METADATA.showFullWidthCover;
       <Picture
         widths={[300, 600, 1000, 2000, 3000, 4000]}
         sizes="100vw"
-        src={post.data.cover!}
-        alt={post.data.title}
+        src={post?.data?.cover!}
+        alt={post?.data?.title}
         formats={["avif", "webp"]}
         loading="eager"
       />
