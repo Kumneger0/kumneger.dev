@@ -97,7 +97,7 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
       <div>
         <ul>
           {
-            page.data.map(({ slug, data: { date, title, summary, tags } }) => (
+            page?.data?.map(({ slug, data: { date, title, summary, tags } }) => (
               <li class="py-5">
                 <article class="space-y-2 flex flex-col xl:space-y-0">
                   <dl>
@@ -131,7 +131,7 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
             ))
           }
         </ul>
-        {(page.url.next || page.url.prev) && <Pagination page={page} />}
+        {(page?.url?.next || page?.url?.prev) && <Pagination page={page} />}
       </div>
     </div>
   </div>

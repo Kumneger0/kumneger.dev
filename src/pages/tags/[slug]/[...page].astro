@@ -13,9 +13,12 @@ const t = useTranslations();
 interface Props {
   page: Page<CollectionEntry<"blog">>;
   entry: CollectionEntry<"tags">;
+
 }
 
-export async function getStaticPaths({ paginate }) {
+
+export const prerender = true
+export async function getStaticPaths({ paginate } : any) {
   const tags = await getCollection("tags");
   const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
 
@@ -32,14 +35,20 @@ export async function getStaticPaths({ paginate }) {
 }
 
 const { page, entry } = Astro.props;
-const { Content } = await entry.render();
+const Render = await entry?.render();
+
+
+console.log('Render', Render)
+
+
+const Content = Render.Content
 
 let robots;
 let titleTemplate = "";
-if (page.currentPage > 1) {
+if (page?.currentPage > 1) {
   // Ask search engines to not index paginated pages
   robots = "noindex, follow";
-  titleTemplate = t("seo.pagination.page", { page: `${page.currentPage}` }); // `%s - Page ${page.currentPage}`;
+  titleTemplate = t("seo.pagination.page", { page: `${page?.currentPage}` }); // `%s - Page ${page.currentPage}`;
 }
 ---
 
