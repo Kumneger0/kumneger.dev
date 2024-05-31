@@ -3,6 +3,8 @@
  author: Kumneger Wondimu
  date: '2023-07-02'
  summary: In this article, we will learn how to access the user's clipboard in JavaScript.
+ cover : '@/assets/users-clipboard.jpeg'
+ postLayout : 'simple'
 ---
 
 Accessing the user's clipboard is a common feature on many websites and applications, often implemented as a "Copy to Clipboard" function. It provides a subtle and easy way to assist users instead of having them manually copy large pieces of text themselves
@@ -15,7 +17,7 @@ The Clipboard API provides both read and write access to the contents of the sys
 
 Here's a simple example of how you can access the clipboard
 
-```
+```js
 async function copyToClipboard(text) {
   await navigator.clipboard.writeText(text);
 }
@@ -33,7 +35,7 @@ Apart from directly accessing the clipboard data, you can also listen to clipboa
 
 Here's an example of how you can attach an event listener to a document
 
-```
+```js
 document.addEventListener('copy', function(e){
     e.preventDefault();
     var selection = window.getSelection().toString();

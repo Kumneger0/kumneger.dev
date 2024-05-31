@@ -7,7 +7,6 @@ import { SEO } from "astro-seo";
 import { getEntry, type CollectionEntry } from "astro:content";
 import Favicon from "@/assets/favicon.svg";
 import { getImage } from "astro:assets";
-import Analytics from "./Analytics.astro";
 
 interface Props {
   title: string;
@@ -69,7 +68,7 @@ const isProduction = import.meta.env.PROD;
   <SEO
     title={title}
     {titleTemplate}
-    titleDefault={SITE_METADATA.title}
+    titleDefault={SITE_METADATA?.title}
     description={description}
     nofollow={robots.includes("nofollow")}
     noindex={robots.includes("noindex")}
@@ -124,7 +123,7 @@ const isProduction = import.meta.env.PROD;
         alt: title,
       },
       optional: {
-        locale: SITE_METADATA.language,
+        locale: SITE_METADATA?.language,
         description,
       },
       ...(article && {
@@ -137,6 +136,5 @@ const isProduction = import.meta.env.PROD;
       }),
     }}
   />
-  {isProduction && <Analytics />}
-  <ViewTransitions />
+  <ViewTransitions  />
 </head>

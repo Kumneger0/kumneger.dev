@@ -3,6 +3,8 @@
  author: Kumneger Wondimu
  date: '2023-07-10'
  summary : In this article, we will learn how to access the user's screen in JavaScript.
+ cover : '@/assets/users-screen.jpeg'
+ postLayout : 'simple'
 ---
 
 The **_navigator.mediaDevices.getDisplayMedia_** is a method provided by the Web API which allows you to capture the contents of the user's screen. It returns a promise that resolves to a MediaStream object containing the screen's live video and audio streams
@@ -11,7 +13,7 @@ The **_navigator.mediaDevices.getDisplayMedia_** is a method provided by the Web
 
 The getDisplayMedia method can be used without any parameters or with an optional MediaStreamConstraints object. The MediaStreamConstraints object specifies the types of media to request, along with any requirements for each type
 
-```
+```js
 
 navigator.mediaDevices.getDisplayMedia(constraints)
 
@@ -23,7 +25,7 @@ Let's create a simple example where we capture the user's screen and display it 
 
 First, add a video element and a button to your HTML:
 
-```
+```js
 
 <p>
   Click the Start Capture button to begin.
@@ -39,7 +41,7 @@ The video element will be used to display the captured screen, and the button wi
 
 Next, create a JavaScript function to start the screen capture
 
-```
+```js
 const startCapture = () => {
   navigator.mediaDevices.getDisplayMedia()
     .then(stream => {

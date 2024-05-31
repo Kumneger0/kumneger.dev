@@ -61,7 +61,7 @@ const { Content, headings } = await post.render();
         </div>
         {
           post.data.cover && POST_METADATA.showCover && (
-            <div class="space-y-1 pb-10 text-center dark:border-gray-700">
+            <div transition:persist={'"(prefers-color'} class="space-y-1 pb-10 text-center dark:border-gray-700">
               <PostCover {post} />
             </div>
           )

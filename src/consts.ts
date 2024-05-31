@@ -9,31 +9,7 @@ export const SITE_METADATA = {
   siteRepo: "https://github.com/kumneger0/kune-blog",
   robots: "index, follow", // Options: index, noindex, follow, nofollow
 
-  // These are not supported yet
-  analytics: {
-    fantom: {
-      site: "", // Add your site id here
-      src: "https://cdn.usefantom.com/fantom.js",
-    },
-    googleAnalyticsId: null, // Add your Google Analytics id here
-    metricalApp: null, // Add your Metrical app here
-    plausible: {
-      domain: "", // Add your domain here
-      src: "https://plausible.io/js/plausible.js",
-    },
-    simpleAnalytics: false, // Activate Simple Analytics
-    umami: {
-      site: "", // Add your site id here
-      dataId: "", // Add your data id here
-      host: "/umami.js", // Add your host here
-    },
-    // amplitudeApiKey: null, // Add your Amplitude Api Key here, not yet implemented
-    matomo: {
-      id: "", // Add your Matomo id here
-      url: "", // Add your Matomo url here
-    },
-    minimalAnalyticsId: null, // Add your Minimal Analytics id here
-  },
+
   // newsletter: {
   //     // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus
   //     // Please add your .env file and modify it according to your selection
