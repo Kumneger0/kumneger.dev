@@ -5,6 +5,7 @@ import tailwind from "@astrojs/tailwind";
 import solidJs from "@astrojs/solid-js";
 import { SITE_METADATA } from "./src/consts.ts";
 import metaTags from "astro-meta-tags";
+import vercel from "@astrojs/vercel/serverless";
 
 import robotsTxt from "astro-robots-txt";
 
@@ -12,5 +13,18 @@ import robotsTxt from "astro-robots-txt";
 export default defineConfig({
   prefetch: true,
   site: SITE_METADATA.siteUrl,
-  integrations: [mdx(), sitemap(), tailwind(), solidJs(), metaTags(), robotsTxt()]
+  integrations: [
+    mdx(),
+    sitemap(),
+    tailwind(),
+    solidJs(),
+    metaTags(),
+    robotsTxt(),
+  ],
+  output: "server",
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
 });
