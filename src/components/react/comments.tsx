@@ -1,4 +1,5 @@
 import { DiscussionEmbed } from "disqus-react";
+import { useEffect, useState } from "react";
 const DisqusComments = ({
   post,
   postURL,
@@ -6,6 +7,17 @@ const DisqusComments = ({
   post: { id: string; title: string };
   postURL: string;
 }) => {
+  const [currentTheme, setTheme] = useState("dark");
+
+  useEffect(() => {
+    window.onstorage = () => {
+      const theme = localStorage.getItem("theme");
+      console.log("theme", theme);
+    };
+
+    return () => {};
+  }, []);
+
   const disqusShortname = "kune-2";
   const disqusConfig = {
     url: postURL,
@@ -14,7 +26,11 @@ const DisqusComments = ({
   };
   return (
     <div>
-      <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+      <DiscussionEmbed
+        key={currentTheme}
+        shortname={disqusShortname}
+        config={disqusConfig}
+      />
     </div>
   );
 };
