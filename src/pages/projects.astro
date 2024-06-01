@@ -1,6 +1,4 @@
 ---
-
-
 //@ts-ignore
 import Card from "@/components/Card.astro";
 //@ts-ignore
@@ -11,7 +9,7 @@ import RootLayout from "@/layouts/RootLayout.astro";
 
 const t = useTranslations();
 
-export const prerender = true
+export const prerender = true;
 
 const projectsData = [
   {
@@ -20,15 +18,6 @@ const projectsData = [
       "Highly Experimental React Library. Converts React components to static HTML for enhanced performance and SEO, with support for React Server Components. Optimizes for speed, SEO, and scalability.",
     href: "https://reactbunode.pages.dev/",
     imgSrc: "https://placeholder.com/500x190",
-     
-  },
-  {
-    title: "My Blog",
-    description:
-      "This blog app, crafted with Next.js, serves as a platform for sharing insights and articles on web development. Occasionally, I pen my thoughts and tutorials, making it a space where I explore and document my journey in the dynamic world of web development.",
-    href: "/blog",
-    imgSrc: "https://placeholder.com/500x190",
-
   },
   {
     title: "Kpass",
@@ -38,40 +27,23 @@ const projectsData = [
 
     href: "https://github.com/Kumneger0/kpass",
     imgSrc: "https://placeholder.com/500x190",
-
-
   },
   {
     title: `React-PocketChat`,
     description:
       "Explore a new real-time chat app built with React, TypeScript, and Pocketbase. Connect with friends via usernames, have private chats, and view profiles. Experience smooth, interactive communication now!",
-    href:
-      "https://github.com/Kumneger0/chat-app-with-react-and-pocketbase",
+    href: "https://github.com/Kumneger0/chat-app-with-react-and-pocketbase",
     imgSrc: "https://placeholder.com/500x190",
-   
   },
   {
     href: "https://kunedrive.web.app/",
-        imgSrc: "https://placeholder.com/500x190",
+    imgSrc: "https://placeholder.com/500x190",
 
     title: `KDrive - Your Personal Cloud`,
     description:
-      "Developed KDrive, a cloud storage solution using React and Firebase, purely for personal enjoyment Emphasizes my skills in leveraging Firebase for cloud storage."
+      "Developed KDrive, a cloud storage solution using React and Firebase, purely for personal enjoyment Emphasizes my skills in leveraging Firebase for cloud storage.",
   },
-  {
-    href: "https://food-app-lac.vercel.app/",
-         imgSrc: "https://placeholder.com/500x190",
-
-    title: "Tasty - Your Culinary Adventure Starts Here",
-    description:
-      "Experience Tasty, a recipe app powered by Next.js and TypeScript, featuring a wide range of meals with videos and step-by-step instructions. Start cooking with Tasty today!"
-  }
-] 
-
-
-
-
-
+];
 ---
 
 <RootLayout
@@ -93,12 +65,7 @@ const projectsData = [
       <div class="-m-4 flex flex-wrap">
         {
           projectsData.map((d) => (
-            <Card
-              title={d.title}
-              description={d.description}
-              imgSrc={d.imgSrc}
-              href={d.href}
-            />
+            <Card title={d.title} description={d.description} href={d.href} />
           ))
         }
       </div>
