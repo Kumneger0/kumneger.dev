@@ -1,12 +1,14 @@
 import { DiscussionEmbed } from "disqus-react";
 const DisqusComments = ({
   post,
+  postURL,
 }: {
-  post: { url: string; id: string; title: string };
+  post: { id: string; title: string };
+  postURL: string;
 }) => {
-  const disqusShortname = "your-disqus-shortname";
+  const disqusShortname = "kune-2";
   const disqusConfig = {
-    url: "https://your-site-url/post-slug",
+    url: postURL,
     identifier: post.id, // Single post id
     title: post.title, // Single post title
   };

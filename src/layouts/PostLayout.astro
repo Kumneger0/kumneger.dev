@@ -7,12 +7,13 @@ import RootLayout from "./RootLayout.astro";
 import { type CollectionEntry, getEntries } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import Tag from "../components/Tag.astro";
-import ScrollTopAndComments from "@/solid/ScrollTopAndComments.tsx";
+import ScrollTopAndComments from "@/react/ScrollTopAndComments";
 import PostCover from "../components/PostCover.astro";
 import DetailsSummary from "../components/DetailsSummary.astro";
 import SocialShareButtons from "../components/social-icons/SocialShareButtons.astro";
 import { POST_METADATA } from "@/consts";
 import { useTranslations } from "@/i18n";
+import DisqusComments from "@/react/comments";
 
 const t = useTranslations();
 
@@ -39,6 +40,9 @@ const articleOgDetails = {
 };
 
 const { Content, headings } = await post.render();
+const postURL = import.meta.env.PROD
+  ? `https://kune-blog.vercel.app/blog/${post.data.title}`
+  : `https://localhost:4321/blog/${post.data.title}`;
 ---
 
 <RootLayout
@@ -54,7 +58,7 @@ const { Content, headings } = await post.render();
           <div class="space-y-1 text-center pb-4">
             <dl class="space-y-10">
               <div>
-                <dt class="sr-only">{t('layouts.postLayout.publishedAt')}</dt>
+                <dt class="sr-only">{t("layouts.postLayout.publishedAt")}</dt>
                 <dd
                   class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400"
                 >
@@ -85,7 +89,7 @@ const { Content, headings } = await post.render();
           <dl
             class="pb-10 pt-6 xl:border-b xl:border-gray-200 xl:pt-11 xl:dark:border-gray-700"
           >
-            <dt class="sr-only">{t('layouts.postLayout.authors')}</dt>
+            <dt class="sr-only">{t("layouts.postLayout.authors")}</dt>
             <dd>
               <ul
                 class="flex flex-wrap justify-center items-center gap-4 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8"
@@ -105,11 +109,15 @@ const { Content, headings } = await post.render();
                           />
                         )}
                         <dl class="whitespace-nowrap text-sm font-medium leading-5">
-                          <dt class="sr-only">{t('layouts.postLayout.authorName')}</dt>
+                          <dt class="sr-only">
+                            {t("layouts.postLayout.authorName")}
+                          </dt>
                           <dd class="text-gray-900 dark:text-gray-100">
                             {data.name}
                           </dd>
-                          <dt class="sr-only">{t('layouts.postLayout.authorTwitter')}</dt>
+                          <dt class="sr-only">
+                            {t("layouts.postLayout.authorTwitter")}
+                          </dt>
                           <dd>
                             {data.twitter && (
                               <Link
@@ -141,21 +149,25 @@ const { Content, headings } = await post.render();
               post.data.draft && (
                 <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 dark:bg-yellow-500 dark:border-yellow-300 mt-10">
                   <p class="leading-5 text-yellow-700 dark:text-yellow-300">
-                    {t('layouts.postLayout.draftMessage')}
+                    {t("layouts.postLayout.draftMessage")}
                   </p>
                 </div>
               )
             }
             {
-              ['top', 'both'].includes(POST_METADATA.showShareButtons) ? (
-                <SocialShareButtons title={post.data.title} description={post.data.summary} class="mt-4" />
+              ["top", "both"].includes(POST_METADATA.showShareButtons) ? (
+                <SocialShareButtons
+                  title={post.data.title}
+                  description={post.data.summary}
+                  class="mt-4"
+                />
               ) : null
             }
             {
               headings.length > 0 && POST_METADATA.showTableOfContents && (
                 <DetailsSummary
                   class="border border-gray-100 dark:border-gray-600 rounded mt-4 max-w-none"
-                  title={t('layouts.postLayout.tableOfContents')}
+                  title={t("layouts.postLayout.tableOfContents")}
                 >
                   <ul class="space-y-2 list-none mt-0 ps-0">
                     {headings.map(({ slug, text, depth }) => (
@@ -183,10 +195,19 @@ const { Content, headings } = await post.render();
               <Content />
             </div>
             {
-              ['bottom', 'both'].includes(POST_METADATA.showShareButtons) ? (
-                <SocialShareButtons title={post.data.title} description={post.data.summary} />
+              ["bottom", "both"].includes(POST_METADATA.showShareButtons) ? (
+                <SocialShareButtons
+                  title={post.data.title}
+                  description={post.data.summary}
+                />
               ) : null
             }
+            <DisqusComments
+              client:idle
+              post={{ id: post.id, title: post.data.title }}
+              postURL={postURL}
+            />
+
             <!--    <div class="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">-->
             <!--        <Link href={discussUrl(path)} rel="nofollow">-->
             <!--            Discuss on Twitter-->
@@ -211,7 +232,7 @@ const { Content, headings } = await post.render();
                 tags && (
                   <div class="py-4 xl:py-8">
                     <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                      {t('layouts.postLayout.tags')}
+                      {t("layouts.postLayout.tags")}
                     </h2>
                     <div class="flex flex-wrap">
                       {tags.map((tag) => (
@@ -227,7 +248,7 @@ const { Content, headings } = await post.render();
                     {prev && (
                       <div>
                         <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                          {t('layouts.postLayout.previousPost')}
+                          {t("layouts.postLayout.previousPost")}
                         </h2>
                         <div class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                           <Link href={`/blog/${prev.slug}`}>
@@ -239,7 +260,7 @@ const { Content, headings } = await post.render();
                     {next && (
                       <div>
                         <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                          {t('layouts.postLayout.nextPost')}
+                          {t("layouts.postLayout.nextPost")}
                         </h2>
                         <div class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                           <Link href={`/blog/${next.slug}`}>
@@ -255,7 +276,7 @@ const { Content, headings } = await post.render();
                 related.length > 0 && (
                   <div class="py-4 xl:pb-8">
                     <h2 class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                      {t('layouts.postLayout.relatedPosts')}
+                      {t("layouts.postLayout.relatedPosts")}
                     </h2>
                     <ul class="flex flex-wrap gap-2 xl:space-x-0 xl:space-y-0">
                       {related.map((post) => (
@@ -274,9 +295,9 @@ const { Content, headings } = await post.render();
               <Link
                 href="/blog"
                 class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                aria-label={t('layouts.postLayout.backToBlog')}
+                aria-label={t("layouts.postLayout.backToBlog")}
               >
-                &larr; {t('layouts.postLayout.backToBlog')}
+                &larr; {t("layouts.postLayout.backToBlog")}
               </Link>
             </div>
           </footer>

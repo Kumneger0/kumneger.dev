@@ -5,12 +5,13 @@ import Link from "../components/Link.astro";
 import RootLayout from "./RootLayout.astro";
 import { type CollectionEntry, getEntries } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
-import ScrollTopAndComments from "@/solid/ScrollTopAndComments.tsx";
+import ScrollTopAndComments from "@/react/ScrollTopAndComments";
 import PostCover from "../components/PostCover.astro";
 import DetailsSummary from "../components/DetailsSummary.astro";
 import SocialShareButtons from "../components/social-icons/SocialShareButtons.astro";
 import { POST_METADATA } from "@/consts";
 import { useTranslations } from "@/i18n";
+import DisqusComments from "@/components/react/comments";
 
 const t = useTranslations();
 
@@ -37,6 +38,10 @@ const articleOgDetails = {
 };
 
 const { Content, headings } = await post.render();
+
+const postURL = import.meta.env.PROD
+  ? `https://kune-blog.vercel.app/blog/${post.data.title}`
+  : `https://localhost:4321/blog/${post.data.title}`;
 ---
 
 <RootLayout
@@ -61,7 +66,10 @@ const { Content, headings } = await post.render();
         </div>
         {
           post.data.cover && POST_METADATA.showCover && (
-            <div transition:persist={'"(prefers-color'} class="space-y-1 pb-10 text-center dark:border-gray-700">
+            <div
+              transition:persist={'"(prefers-color'}
+              class="space-y-1 pb-10 text-center dark:border-gray-700"
+            >
               <PostCover {post} />
             </div>
           )
@@ -142,6 +150,13 @@ const { Content, headings } = await post.render();
         <!--            <Comments slug={slug} />-->
         <!--        </div>-->
         <!--)}-->
+
+        <DisqusComments
+          client:idle
+          post={{ id: post.id, title: post.data.title }}
+          postURL={postURL}
+        />
+
         <footer>
           <div
             class="flex flex-col text-sm font-medium sm:flex-row sm:justify-between sm:text-base"
