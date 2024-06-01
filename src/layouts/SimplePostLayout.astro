@@ -152,7 +152,7 @@ const postURL = import.meta.env.PROD
         <!--)}-->
 
         <DisqusComments
-          client:only
+          client:only="react"
           post={{ id: post.id, title: post.data.title }}
           postURL={postURL}
         />
