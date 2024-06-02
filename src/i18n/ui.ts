@@ -22,7 +22,7 @@ export const ui = {
     "pages.tags.viewPosts": "View all posts with tag {tag}",
     "pages.projects.title": "Projects",
     "pages.projects.description": "All projects",
-    "pages.projects.allProjects": "All projects",
+    "pages.projects.allProjects": "Projects",
     "pages.projects.showcase": "Some of my recent projects",
     "pages.blog.title": "Blog",
     "pages.blog.description": "All blog posts",

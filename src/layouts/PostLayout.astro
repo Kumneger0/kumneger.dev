@@ -135,7 +135,7 @@ const postURL = import.meta.env.PROD
                       </li>
                       <li class="text-gray-500 dark:text-gray-400">
                         {data.occupation && data.company
-                          ? `${data.occupation} at ${data.company}`
+                          ? `${data.occupation} `
                           : data.company}
                       </li>
                     </>
@@ -154,15 +154,7 @@ const postURL = import.meta.env.PROD
                 </div>
               )
             }
-            {
-              ["top", "both"].includes(POST_METADATA.showShareButtons) ? (
-                <SocialShareButtons
-                  title={post.data.title}
-                  description={post.data.summary}
-                  class="mt-4"
-                />
-              ) : null
-            }
+
             {
               headings.length > 0 && POST_METADATA.showTableOfContents && (
                 <DetailsSummary
