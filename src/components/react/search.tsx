@@ -12,10 +12,12 @@ export type SearchItem = {
       collection: "tags";
       slug: string;
     }[];
+    tagString: string;
     title: string;
     summary: string;
     slug: string;
     cover: string;
+    date: Date;
   };
 };
 
@@ -39,7 +41,11 @@ export default function SearchBar({ searchList }: Props) {
     setInputVal(e.currentTarget.value);
   };
 
-  const postsToSearch = searchList.map(({ data, slug }) => ({ ...data, slug }));
+  const postsToSearch = searchList.map(({ data, slug }) => ({
+    ...data,
+    slug,
+    tagString: data.tags.join(","),
+  }));
 
   console.log("list", searchList);
 
@@ -131,12 +137,12 @@ function Card({
   summary,
   tags,
   title,
-
+  date,
   cover,
 }: Omit<SearchItem["data"], "slug"> & { href: string }) {
   return (
     <div className="space-y-2 my-3 xl:grid xl:grid-cols-4 space-x-4 xl:space-y-0 xl:items-stretch">
-      <Cover cover={cover} date={new Date()} title={title} />
+      <Cover cover={cover} date={date} title={title} />
       <div className="space-y-5 xl:col-span-3">
         <div className="space-y-6">
           <div>
@@ -195,7 +201,7 @@ function Cover({
     >
       {cover && (
         <img
-          src={cover}
+          src={cover?.src}
           alt={title}
           // widths={[300, 600, 1000]}
           sizes="(max-width: 767px) 100vw, 300px"
@@ -205,7 +211,11 @@ function Cover({
       <dl>
         {/* <dt className="sr-only">{t("components.listPostCover.publishedAt")}</dt> */}
         <dd className="text-xs py-0 px-2 font-medium leading-6 text-primary-50 bg-primary-700 rounded-lg m-1 absolute bottom-0 z-10">
-          {date.toISOString()}
+          {date.toLocaleDateString("en", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
         </dd>
       </dl>
     </div>
