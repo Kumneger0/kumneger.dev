@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import FormattedDate from "./FormattedDate.astro";
 import type { CollectionEntry } from "astro:content";
 import { useTranslations } from "@/i18n";
+import { fade } from "astro:transitions";
 
 const t = useTranslations();
 
@@ -12,11 +13,18 @@ type Props = {
 };
 
 const {
-  post: {data: { cover, title, date }},
+  post: {
+    data: { cover, title, date },
+  },
 } = Astro.props;
 ---
 
-<div class="relative h-[200px] overflow-hidden bg-primary-50 dark:bg-opacity-10 rounded-lg" class:list={Astro.props.class}>
+<div
+  transition:name={`${title}-img`}
+  transition:animate={fade({ duration: "0.4" })}
+  class="relative h-[200px] overflow-hidden bg-primary-50 dark:bg-opacity-10 rounded-lg"
+  class:list={Astro.props.class}
+>
   {
     cover && (
       <Image
@@ -29,7 +37,7 @@ const {
     )
   }
   <dl>
-    <dt class="sr-only">{t('components.listPostCover.publishedAt')}</dt>
+    <dt class="sr-only">{t("components.listPostCover.publishedAt")}</dt>
     <dd
       class="text-xs py-0 px-2 font-medium leading-6 text-primary-50 bg-primary-700 rounded-lg m-1 absolute bottom-0 z-10"
     >

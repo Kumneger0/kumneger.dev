@@ -21,6 +21,7 @@ export const ui = {
     "pages.tags.noTags": "No tags found",
     "pages.tags.viewPosts": "View all posts with tag {tag}",
     "pages.projects.title": "Projects",
+    "pages.search.title": "Search Blog Posts",
     "pages.projects.description": "All projects",
     "pages.projects.allProjects": "Projects",
     "pages.projects.showcase": "Some of my recent projects",

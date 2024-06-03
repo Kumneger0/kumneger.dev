@@ -9,6 +9,7 @@ import Tag from "../components/Tag.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import type { Page } from "astro";
 import { useTranslations } from "@/i18n";
+import { fade } from "astro:transitions";
 
 const t = useTranslations();
 
@@ -42,6 +43,8 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
   <div>
     <div class="pb-6 pt-6">
       <h1
+        transition:name={title}
+        transition:animate={fade({ duration: "0.4" })}
         class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14"
       >
         {title}
@@ -61,20 +64,22 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
         <div class="py-4 px-6">
           {
             isBlogPage ? (
-              <h3 class="text-primary-500 font-bold uppercase">{t('layouts.listWithTagsLayout.allPosts')}</h3>
+              <h3 class="text-primary-500 font-bold uppercase">
+                {t("layouts.listWithTagsLayout.allPosts")}
+              </h3>
             ) : (
               <Link
                 href="/blog"
                 class="font-bold uppercase text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500"
               >
-                {t('layouts.listWithTagsLayout.allPosts')}
+                {t("layouts.listWithTagsLayout.allPosts")}
               </Link>
             )
           }
           <ul>
             {
               tags.map(({ slug, data }) => (
-                <li class="my-3">
+                <li  class="my-3">
                   {isSamePath(`/tag/${slug}`) ? (
                     <h3 class="inline py-2 px-3 uppercase text-sm font-bold text-primary-500">
                       {`${data.name} (${tagCount(slug)})`}
@@ -97,38 +102,44 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
       <div>
         <ul>
           {
-            page?.data?.map(({ slug, data: { date, title, summary, tags } }) => (
-              <li class="py-5">
-                <article class="space-y-2 flex flex-col xl:space-y-0">
-                  <dl>
-                    <dt class="sr-only">{t('layouts.listWithTagsLayout.publishedAt')}</dt>
-                    <dd class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                      <FormattedDate date={date} />
-                    </dd>
-                  </dl>
-                  <div class="space-y-3">
-                    <div>
-                      <h3 class="text-2xl font-bold leading-8 tracking-tight">
-                        <Link
-                          href={`/blog/${slug}`}
-                          class="text-gray-900 dark:text-gray-100"
-                        >
-                          {title}
-                        </Link>
-                      </h3>
-                      <div class="flex flex-wrap">
-                        {tags.map(({ slug }) => (
-                          <Tag slug={slug} />
-                        ))}
+            page?.data?.map(
+              ({ slug, data: { date, title, summary, tags } }) => (
+                <li class="py-5">
+                  <article class="space-y-2 flex flex-col xl:space-y-0">
+                    <dl>
+                      <dt class="sr-only">
+                        {t("layouts.listWithTagsLayout.publishedAt")}
+                      </dt>
+                      <dd class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                        <FormattedDate date={date} />
+                      </dd>
+                    </dl>
+                    <div class="space-y-3">
+                      <div>
+                        <h3 class="text-2xl font-bold leading-8 tracking-tight">
+                          <Link
+                            href={`/blog/${slug}`}
+                            class="text-gray-900 dark:text-gray-100"
+                            transition:name={title}
+                            transition:animate={fade({ duration: "0.4" })}
+                          >
+                            {title}
+                          </Link>
+                        </h3>
+                        <div class="flex flex-wrap">
+                          {tags.map(({ slug }) => (
+                            <Tag slug={slug} />
+                          ))}
+                        </div>
+                      </div>
+                      <div class="prose max-w-none text-gray-500 dark:text-gray-400">
+                        {summary}
                       </div>
                     </div>
-                    <div class="prose max-w-none text-gray-500 dark:text-gray-400">
-                      {summary}
-                    </div>
-                  </div>
-                </article>
-              </li>
-            ))
+                  </article>
+                </li>
+              )
+            )
           }
         </ul>
         {(page?.url?.next || page?.url?.prev) && <Pagination page={page} />}

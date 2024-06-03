@@ -14,6 +14,7 @@ import SocialShareButtons from "../components/social-icons/SocialShareButtons.as
 import { POST_METADATA } from "@/consts";
 import { useTranslations } from "@/i18n";
 import DisqusComments from "@/react/comments";
+import { fade } from "astro:transitions";
 
 const t = useTranslations();
 
@@ -66,7 +67,11 @@ const postURL = import.meta.env.PROD
                 </dd>
               </div>
             </dl>
-            <PageTitle>{post.data.title}</PageTitle>
+            <PageTitle
+              transition:name={post.data.title}
+              transition:animate={fade({ duration: "0.4" })}
+              >{post.data.title}</PageTitle
+            >
           </div>
           {
             post.data.cover && POST_METADATA.showCover && (

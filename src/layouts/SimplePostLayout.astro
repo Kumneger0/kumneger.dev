@@ -62,14 +62,13 @@ const postURL = import.meta.env.PROD
               <FormattedDate date={post.data.date} />
             </dd>
           </dl>
-          <PageTitle>{post.data.title}</PageTitle>
+          <PageTitle transition:name={post.data.title}
+            >{post.data.title}</PageTitle
+          >
         </div>
         {
           post.data.cover && POST_METADATA.showCover && (
-            <div
-              transition:persist={'"(prefers-color'}
-              class="space-y-1 pb-10 text-center dark:border-gray-700"
-            >
+            <div class="space-y-1 pb-10 text-center dark:border-gray-700">
               <PostCover {post} />
             </div>
           )

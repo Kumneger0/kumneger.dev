@@ -8,10 +8,11 @@ import ListPostCover from "@/components/ListPostCover.astro";
 import Tag from "@/components/Tag.astro";
 import { excludeDrafts, sortBlogPosts } from "@/functions";
 import { useTranslations } from "@/i18n";
+import { fade } from "astro:transitions";
 
 const t = useTranslations();
 
-export const prerender = true
+export const prerender = true;
 
 const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
 ---
@@ -44,7 +45,11 @@ const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
                   <div class="space-y-5 xl:col-span-3">
                     <div class="space-y-6">
                       <div>
-                        <h2 class="text-2xl font-bold leading-8 tracking-tight">
+                        <h2
+                          transition:animate={fade({ duration: "0.4" })}
+                          transition:name={title}
+                          class="text-2xl font-bold leading-8 tracking-tight"
+                        >
                           <Link
                             href={`/blog/${post.slug}`}
                             class="text-gray-900 dark:text-gray-100"
@@ -66,9 +71,9 @@ const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
                       <Link
                         href={`/blog/${post.slug}`}
                         class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                        aria-label={t('pages.home.readMoreAbout', {title})}
+                        aria-label={t("pages.home.readMoreAbout", { title })}
                       >
-                        {t('pages.home.readMore')} &rarr;
+                        {t("pages.home.readMore")} &rarr;
                       </Link>
                     </div>
                   </div>
@@ -86,9 +91,9 @@ const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
         <Link
           href="/blog"
           class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-          aria-label={t('pages.home.viewAllPosts')}
+          aria-label={t("pages.home.viewAllPosts")}
         >
-        {t('pages.home.viewAllPosts')} &rarr;
+          {t("pages.home.viewAllPosts")} &rarr;
         </Link>
       </div>
     )

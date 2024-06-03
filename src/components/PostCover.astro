@@ -2,7 +2,7 @@
 import { Picture } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { POST_METADATA } from "../consts";
-import { fade } from "astro:transitions";
+import { fade, fade } from "astro:transitions";
 
 type Props = {
   post: CollectionEntry<"blog">;
@@ -21,7 +21,11 @@ const full = POST_METADATA.showFullWidthCover;
     }}
     class="relative mt-6 overflow-hidden rounded-lg shadow-lg"
   >
-    <div  class="relative aspect-[2/1] w-full">
+    <div
+      transition:name={`${post.data.title}-img`}
+      transition:animate={fade({ duration: "0.4" })}
+      class="relative aspect-[2/1] w-full"
+    >
       <Picture
         widths={[300, 600, 1000, 2000, 3000, 4000]}
         sizes="100vw"
