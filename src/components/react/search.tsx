@@ -16,7 +16,7 @@ export type SearchItem = {
     title: string;
     summary: string;
     slug: string;
-    cover: string;
+    cover: { src: string };
     date: Date;
   };
 };
@@ -44,15 +44,13 @@ export default function SearchBar({ searchList }: Props) {
   const postsToSearch = searchList.map(({ data, slug }) => ({
     ...data,
     slug,
-    tagString: data.tags.join(","),
+    tagString: data.tags.map(({ slug }) => slug).join(","),
   }));
-
-  console.log("list", searchList);
 
   const fuse = useMemo(
     () =>
       new Fuse(postsToSearch, {
-        keys: ["title", "description", "tags"],
+        keys: ["title", "summary", "tagString"],
         includeMatches: true,
         minMatchCharLength: 2,
         threshold: 0.5,
@@ -61,13 +59,10 @@ export default function SearchBar({ searchList }: Props) {
   );
 
   useEffect(() => {
-    // if URL has search query,
-    // insert that search query in input field
     const searchUrl = new URLSearchParams(window.location.search);
     const searchStr = searchUrl.get("q");
     if (searchStr) setInputVal(searchStr);
 
-    // put focus cursor at the end of the string
     setTimeout(function () {
       inputRef.current!.selectionStart = inputRef.current!.selectionEnd =
         searchStr?.length || 0;
@@ -78,7 +73,6 @@ export default function SearchBar({ searchList }: Props) {
     // Add search result only if
     // input value is more than one character
     let inputResult = inputVal.length > 1 ? fuse.search(inputVal) : [];
-    console.log("input result", inputResult);
     setSearchResults(inputResult);
 
     // Update search string in URL
@@ -101,13 +95,12 @@ export default function SearchBar({ searchList }: Props) {
         border-opacity-40 bg-skin-fill py-3 pl-10
         pr-3 placeholder:italic placeholder:text-opacity-75 
         focus:border-skin-accent focus:outline-none text-black"
-          placeholder="Search for anything..."
+          placeholder="Search for Articles..."
           type="text"
           name="search"
           value={inputVal}
           onChange={handleChange}
           autoComplete="off"
-          // autoFocus
           ref={inputRef}
         />
       </label>
@@ -148,7 +141,7 @@ function Card({
           <div>
             <h2 className="text-2xl font-bold leading-8 tracking-tight">
               <a
-                transition:name={title}
+                style={{ viewTransitionName: title }}
                 href={href}
                 className="text-gray-900 dark:text-gray-100"
               >
@@ -158,10 +151,12 @@ function Card({
             <div className="flex flex-wrap">
               {tags.map(({ slug }) => (
                 <a
-                  transition:name={slug}
+                  style={{ viewTransitionName: slug }}
                   href={`/tags/${slug}`}
-                  class="mr-3 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                ></a>
+                  className="mr-3 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                >
+                  {slug}
+                </a>
               ))}
             </div>
           </div>
@@ -189,15 +184,15 @@ function Cover({
   date,
 }: {
   title: string;
-  cover: string;
+  cover: { src: string };
   date: Date;
 }) {
   console.log(cover);
 
   return (
     <div
-      transition:name={`${title}-img`}
-      class="relative h-[200px] overflow-hidden bg-primary-50 dark:bg-opacity-10 rounded-lg"
+      style={{ viewTransitionName: `${title}-img` }}
+      className="relative h-[200px] overflow-hidden bg-primary-50 dark:bg-opacity-10 rounded-lg"
     >
       {cover && (
         <img
