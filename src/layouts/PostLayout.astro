@@ -15,6 +15,7 @@ import { POST_METADATA } from "@/consts";
 import { useTranslations } from "@/i18n";
 import DisqusComments from "@/react/comments";
 import { fade } from "astro:transitions";
+import AttachCopyAndProgressBar from "../components/AttachCopyAndProgressBar.astro";
 
 const t = useTranslations();
 
@@ -303,3 +304,4 @@ const postURL = import.meta.env.PROD
     </article>
   </SectionContainer>
 </RootLayout>
+<AttachCopyAndProgressBar />

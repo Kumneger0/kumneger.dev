@@ -79,7 +79,7 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
           <ul>
             {
               tags.map(({ slug, data }) => (
-                <li  class="my-3">
+                <li transition:name={slug} class="my-3">
                   {isSamePath(`/tag/${slug}`) ? (
                     <h3 class="inline py-2 px-3 uppercase text-sm font-bold text-primary-500">
                       {`${data.name} (${tagCount(slug)})`}

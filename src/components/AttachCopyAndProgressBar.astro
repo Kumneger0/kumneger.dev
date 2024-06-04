@@ -1,0 +1,71 @@
+<script is:inline>
+  function createProgressBar() {
+    const progressContainer = document.createElement("div");
+    progressContainer.className =
+      "progress-container fixed bg-transparent top-0 z-10 h-1 w-full";
+
+    const progressBar = document.createElement("div");
+    progressBar.className = "progress-bar h-1 w-0 bg-green-600";
+    progressBar.id = "myBar";
+
+    progressContainer.appendChild(progressBar);
+
+    document.body.appendChild(progressContainer);
+  }
+  createProgressBar();
+
+  function updateScrollProgress() {
+    const winScroll =
+      document.body.scrollTop || document.documentElement.scrollTop;
+    const height =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    if (document) {
+      const myBar = document.getElementById("myBar");
+      if (myBar) {
+        myBar.style.width = scrolled + "%";
+      }
+    }
+  }
+  document.addEventListener("scroll", updateScrollProgress);
+
+  function attachCopyButtons() {
+    let copyButtonLabel = "Copy";
+    let codeBlocks = Array.from(document.querySelectorAll("pre"));
+
+    for (let codeBlock of codeBlocks) {
+      let wrapper = document.createElement("div");
+      wrapper.style.position = "relative";
+
+      let copyButton = document.createElement("button");
+      copyButton.className =
+        "copy-code absolute right-3 z-[99999] top-0 rounded bg-green-600 px-2 py-1 text-xs leading-4 text-white text-skin-base font-medium";
+      copyButton.innerHTML = copyButtonLabel;
+      codeBlock.setAttribute("tabindex", "0");
+      codeBlock.appendChild(copyButton);
+
+      // wrap codebock with relative parent element
+      codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
+      wrapper.appendChild(codeBlock);
+
+      copyButton.addEventListener("click", async () => {
+        await copyCode(codeBlock, copyButton);
+      });
+    }
+
+    async function copyCode(block, button) {
+      let code = block.querySelector("code");
+      let text = code?.innerText;
+
+      await navigator.clipboard.writeText(text ?? "");
+
+      button.innerText = "Copied";
+
+      setTimeout(() => {
+        button.innerText = copyButtonLabel;
+      }, 700);
+    }
+  }
+  attachCopyButtons();
+</script>

@@ -12,6 +12,7 @@ import SocialShareButtons from "../components/social-icons/SocialShareButtons.as
 import { POST_METADATA } from "@/consts";
 import { useTranslations } from "@/i18n";
 import DisqusComments from "@/components/react/comments";
+import AttachCopyAndProgressBar from "../components/AttachCopyAndProgressBar.astro";
 
 const t = useTranslations();
 
@@ -188,3 +189,4 @@ const postURL = import.meta.env.PROD
     </article>
   </SectionContainer>
 </RootLayout>
+<AttachCopyAndProgressBar  />
