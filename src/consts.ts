@@ -8,7 +8,11 @@ export const SITE_METADATA = {
   siteUrl: "https://kune.vercel.app",
   siteRepo: "https://github.com/kumneger0/kune-blog",
   robots: "index, follow", // Options: index, noindex, follow, nofollow
+  email: "kumnegerwondimu@gmail.com",
 
+  twitter: "https://x.com/Kumneger0",
+  linkedin: "https://www.linkedin.com/in/kumneger-wondimu-2b8405241/",
+  github: "https://github.com/Kumneger0",
   // newsletter: {
   //     // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus
   //     // Please add your .env file and modify it according to your selection

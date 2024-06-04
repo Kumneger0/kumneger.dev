@@ -4,7 +4,6 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SectionContainer from "../components/SectionContainer.astro";
- 
 
 //@ts-ignore
 import { useTranslations } from "@/i18n";
@@ -30,7 +29,7 @@ type Props = {
 <html lang={t("siteMetadata.language")} class="scroll-smooth">
   <BaseHead {...Astro.props} />
   <body
-    class="bg-white text-black antialiased dark:bg-gray-950 dark:text-white"
+    class="bg-white text-black antialiased dark:bg-gray-900 dark:text-white"
   >
     <SectionContainer>
       <div class="flex h-screen flex-col justify-between font-sans">
