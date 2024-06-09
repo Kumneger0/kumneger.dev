@@ -1,6 +1,6 @@
 import "react-cmdk/dist/cmdk.css";
 import CommandPalette, { filterItems, getItemIndex } from "react-cmdk";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 
 export type SearchItem = {
@@ -36,9 +36,7 @@ const Example = ({ searchList }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const [inputVal, setInputVal] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(
-    null
-  );
+  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
 
   const postsToSearch = searchList?.map(({ data, slug }) => ({
     ...data,
@@ -54,7 +52,7 @@ const Example = ({ searchList }: Props) => {
         minMatchCharLength: 2,
         threshold: 0.5,
       }),
-    [searchList]
+    [searchList],
   );
 
   useEffect(() => {
@@ -70,29 +68,55 @@ const Example = ({ searchList }: Props) => {
     if (inputVal.length > 0) {
       const searchParams = new URLSearchParams(window.location.search);
       searchParams.set("q", inputVal);
-      const newRelativePathQuery =
-        window.location.pathname + "?" + searchParams.toString();
+      const newRelativePathQuery = window.location.pathname + "?" + searchParams.toString();
       history.replaceState(history.state, "", newRelativePathQuery);
     } else {
       history.replaceState(history.state, "", window.location.pathname);
     }
   }, [inputVal]);
 
-  const filteredItems = filterItems(
-    searchResults?.length
-      ? searchResults?.map(({ item }) => ({
-          id: item.slug,
-          items: [
-            { id: item.slug, children: item.title, href: `/blog/${item.slug}` },
-          ],
-        }))
-      : searchList?.map(({ data: { title }, slug }) => ({
-          id: slug,
-          items: [{ id: slug, children: title, href: `/blog/${slug}` }],
-        })),
-    inputVal
-  );
+  // const articles = searchResults?.length
+  //   ? searchResults.map(({ item: { title, slug, tags } }) => ({ title, slug, tags }))
+  //   : searchList.map(({data: { title, tags }, slug }) => )
 
+  const filteredItems = filterItems(
+    [
+      {
+        id: "",
+        heading: "articles",
+        items: searchResults?.length
+          ? searchResults?.map(({ item: { title, slug, tags } }) => ({
+              id: slug,
+              children: (
+                <div>
+                  <div className="font-bold text-lg">{title}</div>
+                  <div>
+                    {tags.map((tag) => (
+                      <div className="text-[0.9em] my-1 font-bold text-primary-500">{tag.slug}</div>
+                    ))}
+                  </div>
+                </div>
+              ),
+              href: `/blog/${slug}`,
+            }))
+          : searchList?.map(({ data: { title, tags }, slug }) => ({
+              id: slug,
+              children: (
+                <div>
+                  <div className="font-bold text-lg">{title}</div>
+                  <div>
+                    {tags.map((tag) => (
+                      <div className="text-[0.9em] font-bold text-primary-500">{tag.slug}</div>
+                    ))}
+                  </div>
+                </div>
+              ),
+              href: `/blog/${slug}`,
+            })),
+      },
+    ],
+    "",
+  );
   if (!open) {
     return (
       <button onClick={() => setOpen(true)}>
@@ -121,6 +145,7 @@ const Example = ({ searchList }: Props) => {
       onChangeOpen={setOpen}
       search={inputVal}
       isOpen={open}
+      placeholder="Search Articles"
       page={page}
     >
       <CommandPalette.Page id="root">
@@ -134,6 +159,7 @@ const Example = ({ searchList }: Props) => {
                   {...rest}
                 />
               ))}
+              <div></div>
             </CommandPalette.List>
           ))
         ) : (

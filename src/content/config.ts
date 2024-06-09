@@ -1,15 +1,16 @@
 import {defineCollection, reference, z} from 'astro:content';
 import {POST_METADATA} from "@/consts.ts";
 
+
 const authors = defineCollection({
   type: 'content',
   schema: z.object({
     name: z.string(),
     avatar: z.string().optional(),
     occupation: z.string().optional(),
-    shortBio: z.string(),
-    company: z.string().optional(),
-    email: z.string().email(),
+         shortBio: z.string(),
+         company: z.string().optional(),
+         email: z.string().email(),
     twitter: z.string().url().optional(),
     linkedin: z.string().url().optional(),
     github: z.string().url().optional(),
@@ -30,8 +31,7 @@ const blog = defineCollection({
     images: z.string().optional(),
     authors: z.array(reference('authors')).default(['default']),
     postLayout: z.enum(['simple', 'column']).default(POST_METADATA.defaultLayout as 'simple' | 'column'),
-    canonicalUrl: z.string().optional(), // Maybe remove later, as Astro provide a better solution for canonical urls
-    // Add related posts
+    canonicalUrl: z.string().optional(), 
     related: z.array(reference('blog')).default([]),
   }),
 });
