@@ -5,7 +5,7 @@
  */
 export const SITE_METADATA = {
   theme: "system", // Options: system, light, dark
-  siteUrl: "https://kune.vercel.app",
+  siteUrl: "https://kunmneger.vercel.app",
   siteRepo: "https://github.com/kumneger0/kune-blog",
   robots: "index, follow", // Options: index, noindex, follow, nofollow
   email: "kumnegerwondimu@gmail.com",
