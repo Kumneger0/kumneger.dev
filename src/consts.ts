@@ -38,7 +38,7 @@ export const SITE_METADATA = {
   //         // theme example: light, dark, dark_dimmed, dark_high_contrast
   //         // transparent_dark, preferred_color_scheme, custom
   //         theme: 'light',
-  //         // theme when dark mode
+  //          theme when dark mode
   //         darkTheme: 'transparent_dark',
   //         // If the theme option above is set to 'custom`
   //         // please provide a link below to your custom theme css file.
@@ -69,7 +69,6 @@ export const SITE_METADATA = {
  */
 export const ITEMS_PER_PAGE = 5;
 
-
 /**
  * Navigation items.
  If title is not found in the translation file, it will be used as is.
@@ -95,5 +94,5 @@ export const POST_METADATA = {
   showAuthors: true, // Show authors in blog post, TODO: Add support for hiding authors
   showRelatedPosts: true, // Show related posts in blog post, TODO: Add support for hiding related posts
   showTableOfContents: true, // Show table of contents in blog post
-  showShareButtons: 'both', // Show share buttons in blog post, options: top, bottom, both, none
+  showShareButtons: "both", // Show share buttons in blog post, options: top, bottom, both, none
 };

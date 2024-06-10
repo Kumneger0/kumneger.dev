@@ -106,7 +106,7 @@ const Example = ({ searchList }: Props) => {
                   <div className="font-bold text-lg">{title}</div>
                   <div>
                     {tags.map((tag) => (
-                      <div className="text-[0.9em] font-bold text-primary-500">{tag.slug}</div>
+                      <div className="text-[0.9em] my-1 font-bold text-primary-500">{tag.slug}</div>
                     ))}
                   </div>
                 </div>
