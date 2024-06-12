@@ -7,7 +7,7 @@ import { SEO } from "astro-seo";
 import { getEntry, type CollectionEntry } from "astro:content";
 import Favicon from "@/assets/favicon.svg";
 import { getImage } from "astro:assets";
-
+import SpeedInsights from '@vercel/speed-insights/astro'
 interface Props {
   title: string;
   description: string;
@@ -140,4 +140,6 @@ const twitterCreator = article?.authorTwitter || creator.data.twitter;
     }}
   />
   <ViewTransitions />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8674305198183882"
+     crossorigin="anonymous"></script>
 </head>

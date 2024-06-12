@@ -32,7 +32,7 @@ interface SearchResult {
 }
 
 const Example = ({ searchList }: Props) => {
-  const [page, setPage] = useState<"root" | "projects">("root");
+  const [page] = useState<"root" | "projects">("root");
   const [open, setOpen] = useState<boolean>(false);
 
   const [inputVal, setInputVal] = useState("");
@@ -92,7 +92,10 @@ const Example = ({ searchList }: Props) => {
                   <div className="font-bold text-lg">{title}</div>
                   <div>
                     {tags.map((tag) => (
-                      <div className="text-[0.9em] my-1 font-bold text-primary-500">{tag.slug}</div>
+                      // @ts-ignore
+                      <div key={tag} className="text-[0.9em] my-1 font-bold text-primary-500">
+                        {tag.slug}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -106,7 +109,10 @@ const Example = ({ searchList }: Props) => {
                   <div className="font-bold text-lg">{title}</div>
                   <div>
                     {tags.map((tag) => (
-                      <div className="text-[0.9em] my-1 font-bold text-primary-500">{tag.slug}</div>
+                      // @ts-ignore
+                      <div key={tag} className="text-[0.9em] my-1 font-bold text-primary-500">
+                        {tag.slug}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -119,7 +125,7 @@ const Example = ({ searchList }: Props) => {
   );
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)}>
+      <button className="mt-2" onClick={() => setOpen(true)}>
         <svg
           className="feather feather-search"
           fill="none"
