@@ -66,7 +66,7 @@ const twitterCreator = article?.authorTwitter || creator.data.twitter;
 <head>
   <SEO
     title={title}
-    {titleTemplate}
+  {titleTemplate}
     titleDefault={SITE_METADATA?.title}
     description={description}
     nofollow={robots.includes("nofollow")}
@@ -91,7 +91,9 @@ const twitterCreator = article?.authorTwitter || creator.data.twitter;
         { rel: "icon", type: `image/svg`, href: favicon.src },
         { rel: "apple-touch-icon", sizes: "76x76", href: appleTouchIcon.src },
         { rel: "icon", type: "image/svg", sizes: "32x32", href: favicon32.src },
-        { rel: "icon", type: "image/svg", sizes: "16x16", href: favicon16.src },
+
+        { rel: "icon", type: "image/svg",      sizes: "16x16", href: favicon16.src },
+        //@ts-ignore
         { rel: "mask-icon", href: favicon16.src, color: "black" },
         { rel: "alternate", type: "application/rss+xml", href: "/rss.xml" },
         {
@@ -126,6 +128,7 @@ const twitterCreator = article?.authorTwitter || creator.data.twitter;
         alt: title,
       },
       optional: {
+        //@ts-ignore
         locale: SITE_METADATA?.language,
         description,
       },
@@ -140,6 +143,5 @@ const twitterCreator = article?.authorTwitter || creator.data.twitter;
     }}
   />
   <ViewTransitions />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8674305198183882"
-     crossorigin="anonymous"></script>
+<meta name="google-site-verification" content="oDVfNqx1QrRnGvkWz-i646WtX-rsZn1h2J7jdBwyHvU" />
 </head>
