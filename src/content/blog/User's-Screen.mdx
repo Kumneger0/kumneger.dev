@@ -15,9 +15,7 @@ The **_navigator.mediaDevices.getDisplayMedia_** is a method provided by the Web
 The getDisplayMedia method can be used without any parameters or with an optional MediaStreamConstraints object. The MediaStreamConstraints object specifies the types of media to request, along with any requirements for each type
 
 ```js
-
-navigator.mediaDevices.getDisplayMedia(constraints)
-
+navigator.mediaDevices.getDisplayMedia(constraints);
 ```
 
 # Example
@@ -44,17 +42,17 @@ Next, create a JavaScript function to start the screen capture
 
 ```js
 const startCapture = () => {
-  navigator.mediaDevices.getDisplayMedia()
-    .then(stream => {
-      const video = document.querySelector('video');
+  navigator.mediaDevices
+    .getDisplayMedia()
+    .then((stream) => {
+      const video = document.querySelector("video");
       video.srcObject = stream;
     })
-    .catch(err => console.error('Error: ' + err));
+    .catch((err) => console.error("Error: " + err));
 };
 
-const startButton = document.getElementById('start');
-startButton.addEventListener('click', startCapture);
-
+const startButton = document.getElementById("start");
+startButton.addEventListener("click", startCapture);
 ```
 
 In this function, we call navigator.mediaDevices.getDisplayMedia() to start the screen capture. This returns a promise that resolves to a MediaStream object. We then set the srcObject property of the video element to this MediaStream, which starts displaying the captured screen in the video element. If there's an error, we log it to the console

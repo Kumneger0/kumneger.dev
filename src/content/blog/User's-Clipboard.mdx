@@ -26,8 +26,6 @@ async function copyToClipboard(text) {
 async function readFromClipboard() {
   return navigator.clipboard.readText();
 }
-
-
 ```
 
 # Clipboard Event Listeners
@@ -37,12 +35,11 @@ Apart from directly accessing the clipboard data, you can also listen to clipboa
 Here's an example of how you can attach an event listener to a document
 
 ```js
-document.addEventListener('copy', function(e){
-    e.preventDefault();
-    var selection = window.getSelection().toString();
-    e.clipboardData.setData('text/plain', selection.toUpperCase());
+document.addEventListener("copy", function (e) {
+  e.preventDefault();
+  var selection = window.getSelection().toString();
+  e.clipboardData.setData("text/plain", selection.toUpperCase());
 });
-
 ```
 
 In this example, we're listening to the 'copy' event. When the event fires, we prevent the default copy functionality, get the user's selection, transform the selection to uppercase, and then place the transformed text in the clipboard

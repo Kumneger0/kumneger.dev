@@ -15,9 +15,9 @@ React hooks are a powerful tool for managing state and side effects in functiona
 In the following example code, the problem is that the **_useMemo_** hook is rendered only when the **_counter_** state is less than 3. This means that if the initial value of **_counter_** is 4 or greater, the **_useMemo_** hook will not be rendered at all. However, if the user clicks the decrement button until **_counter_** is less than 3, the **_useMemo_** hook will be rendered on the next re-render. This causes React to throw an error because the number of rendered hooks has changed.
 
 ```tsx
-import React from 'react';
-import './style.css';
-import { useState, useMemo } from 'react';
+import React from "react";
+import "./style.css";
+import { useState, useMemo } from "react";
 
 export default function App() {
   const [counter, setCounter] = useState(6);
@@ -45,7 +45,6 @@ export default function App() {
     </div>
   );
 }
-
 ```
 
 If the initial value of **_counter_** is 4 or greater, and the user clicks the decrement button until **_counter_** is less than 3, the following error will be thrown:
@@ -57,9 +56,9 @@ Error: Rendered more hooks than during the previous render. This may be caused b
 The solution to this problem is to move the **_useMemo_** hook to the top of the component, before the conditional statement. This will ensure that the **_useMemo_** hook is always rendered, regardless of the value of counter.
 
 ```tsx
-import React from 'react';
-import './style.css';
-import { useState, useMemo } from 'react';
+import React from "react";
+import "./style.css";
+import { useState, useMemo } from "react";
 
 export default function App() {
   const [counter, setCounter] = useState(6);
@@ -86,7 +85,6 @@ export default function App() {
     </div>
   );
 }
-
 ```
 
 With this change, the **_useMemo_** hook will always be rendered, and the error will be avoided.

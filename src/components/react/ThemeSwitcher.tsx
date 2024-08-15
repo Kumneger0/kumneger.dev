@@ -23,7 +23,7 @@ export default function ThemeSwitcher() {
 
   useEffect(() => {
     document.documentElement.classList.remove(
-      theme === "dark" ? "light" : "dark"
+      theme === "dark" ? "light" : "dark",
     );
     document.documentElement.classList.add(theme);
     localStorage.setItem("theme", theme);

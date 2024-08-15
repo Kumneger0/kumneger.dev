@@ -1,13 +1,11 @@
 ---
 title: Server-Sent Events Explained
 author: kumneger wondimu
-date: '2024-07-27'
-tags : ['hono', 'bun']
-cover: '@/assets/server-sent-events.jpeg'
-summary : Discover the power of Server-Sent Events (SSE) to build dynamic, real-time web applications. Learn how to leverage SSE to create engaging user experiences with live data updates
+date: "2024-07-27"
+tags: ["hono", "bun"]
+cover: "@/assets/server-sent-events.jpeg"
+summary: Discover the power of Server-Sent Events (SSE) to build dynamic, real-time web applications. Learn how to leverage SSE to create engaging user experiences with live data updates
 ---
-
-
 
 ## what is server sent events
 
@@ -17,30 +15,30 @@ Server-Sent Events (SSE) is a server push technology that allows servers to send
 
 Server-Sent Events (SSE) provide one-way communication from server to client, while WebSockets enable two-way, full-duplex communication where both the client and server can send and receive messages
 
-
 ## Example Project
+
 Let's build a small group chat application to demonstrate how to implement Server-Sent Events (SSE). For this example, we will use Hono and Bun (although you may use Node.js if you prefer). All of the code is available on my GitHub [repository](https://github.com/Kumneger0/server-sent-events-example.git); feel free to check it out.
 
 To enable Server-Sent Events (SSE) for our application, you can use the `streamSSE` function in Hono, which sets the appropriate `Content-Type: text/event-stream` header for us. This informs the browser that the response will be an SSE, allowing it to handle the incoming stream of events appropriately.
 
 ```tsx
-app.get('/sse', async (c) => {
+app.get("/sse", async (c) => {
   return streamSSE(c, async (stream) => {
     while (true) {
-      const message = `hello clint`
+      const message = `hello clint`;
       await stream.writeSSE({
         data: message,
-        event: 'greeting',
-      })
-      await stream.sleep(3000)
+        event: "greeting",
+      });
+      await stream.sleep(3000);
     }
-  })
-})
+  });
+});
 ```
 
 If you save the code and navigate to your browser at the `/sse` endpoint, you will observe that the server sends a new message saying "hello client" every 3 seconds. This is because the server is continuously writing new SSE events with this message at 3-second intervals. This demonstrates the real-time update capability of Server-Sent Events, where the server pushes updates to the client without the client having to request them repeatedly.
 
-What are data and event properties? Data is the information we send to the client, and an event is used to listen for specific events from our client using the [EventSource API]([https://developer.mozilla.org/en-US/docs/Web/API/EventSource](https://developer.mozilla.org/en-US/docs/Web/API/EventSource))
+What are data and event properties? Data is the information we send to the client, and an event is used to listen for specific events from our client using the [EventSource API](<[https://developer.mozilla.org/en-US/docs/Web/API/EventSource](https://developer.mozilla.org/en-US/docs/Web/API/EventSource)>)
 
 The code below handles the `/sse` endpoint for a group chat application. Each user must provide a unique `id` and a `name`. Here's a breakdown of how it works:
 
@@ -85,13 +83,13 @@ app.get("/sse", async (c) => {
     stream.onAbort(() => {
       users.splice(
         users.findIndex((u) => u.id === userID),
-        1
+        1,
       );
       users.forEach((user) =>
         user.stream.writeSSE({
           data: JSON.stringify({ id: userID, name }),
           event: "user-leave",
-        })
+        }),
       );
       console.log(`user ${userID} disconnected`);
     });
@@ -138,7 +136,6 @@ app.post("/message", async (c) => {
 
   return c.json(body);
 });
-
 ```
 
 In this implementation:
@@ -155,9 +152,8 @@ app.get(
   "*",
   serveStatic({
     root: "./public",
-  })
+  }),
 );
-
 ```
 
 This endpoint handles any incoming GET requests and serves static files from the `./public` directory. For example, if you have an `index.html` file in `./public`, it will be served when the client accesses the root URL (`"/"`)
@@ -208,7 +204,6 @@ function handleSSEConnection() {
     showUserJoinAndLeaveMessage(data, false);
   });
 }
-
 ```
 
 In this implementation:
@@ -226,7 +221,7 @@ Each event handler processes the received data accordingly:
 
 These event handlers—`message`, `new-user`, `user-leave`—are mapped to the `event` property from the server side, which is set using the `writeSSE` method in the server-side code
 
-<img src="/server-sent-events.gif"/>
+<img src="/server-sent-events.gif" />
 ### Summary
 
 In this article, we demonstrated how **Server-Sent Events (SSE)** can be used for real-time updates in a group chat application with Hono, Bun, and Vanilla JS. SSE provides a one-way communication channel from the server to the client, ideal for pushing live updates without the complexity of WebSockets.

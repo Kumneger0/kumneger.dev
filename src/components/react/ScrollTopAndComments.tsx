@@ -21,7 +21,10 @@ export default function ScrollTopAndComments() {
   }, []);
 
   return (
-    <div className="fixed bottom-8 right-8 hidden flex-col gap-3 md:hidden z-10" ref={divRef}>
+    <div
+      className="fixed bottom-8 right-8 hidden flex-col gap-3 md:hidden z-10"
+      ref={divRef}
+    >
       <button
         aria-label={t("components.scrollTopAndComments.scrollTop")}
         onClick={handleScrollToTop}

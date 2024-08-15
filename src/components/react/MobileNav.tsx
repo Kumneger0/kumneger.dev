@@ -66,7 +66,7 @@ export default function MobileNav() {
         </div>
         <nav className="fixed mt-8 h-full">
           {NAVIGATION.map(({ href, title }) => (
-            <div key = {title} className="px-12 py-4">
+            <div key={title} className="px-12 py-4">
               <Link
                 href={href}
                 className="text-2xl font-bold tracking-widest text-gray-900 dark:text-gray-100"

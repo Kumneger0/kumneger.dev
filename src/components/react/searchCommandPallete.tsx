@@ -36,7 +36,9 @@ const Example = ({ searchList }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const [inputVal, setInputVal] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(null);
+  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(
+    null,
+  );
 
   const postsToSearch = searchList?.map(({ data, slug }) => ({
     ...data,
@@ -68,7 +70,8 @@ const Example = ({ searchList }: Props) => {
     if (inputVal.length > 0) {
       const searchParams = new URLSearchParams(window.location.search);
       searchParams.set("q", inputVal);
-      const newRelativePathQuery = window.location.pathname + "?" + searchParams.toString();
+      const newRelativePathQuery =
+        window.location.pathname + "?" + searchParams.toString();
       history.replaceState(history.state, "", newRelativePathQuery);
     } else {
       history.replaceState(history.state, "", window.location.pathname);
@@ -93,7 +96,10 @@ const Example = ({ searchList }: Props) => {
                   <div>
                     {tags.map((tag) => (
                       // @ts-ignore
-                      <div key={tag} className="text-[0.9em] my-1 font-bold text-primary-500">
+                      <div
+                        key={tag}
+                        className="text-[0.9em] my-1 font-bold text-primary-500"
+                      >
                         {tag.slug}
                       </div>
                     ))}
@@ -110,7 +116,10 @@ const Example = ({ searchList }: Props) => {
                   <div>
                     {tags.map((tag) => (
                       // @ts-ignore
-                      <div key={tag} className="text-[0.9em] my-1 font-bold text-primary-500">
+                      <div
+                        key={tag}
+                        className="text-[0.9em] my-1 font-bold text-primary-500"
+                      >
                         {tag.slug}
                       </div>
                     ))}

@@ -1,4 +1,4 @@
-export const defaultLang = 'en' as const;
+export const defaultLang = "en" as const;
 
 export const ui = {
   en: {
