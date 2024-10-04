@@ -95,9 +95,8 @@ const Example = ({ searchList }: Props) => {
                   <div className="font-bold text-lg">{title}</div>
                   <div>
                     {tags.map((tag) => (
-                      // @ts-ignore
                       <div
-                        key={tag}
+                        key={tag.slug}
                         className="text-[0.9em] my-1 font-bold text-primary-500"
                       >
                         {tag.slug}
@@ -115,9 +114,8 @@ const Example = ({ searchList }: Props) => {
                   <div className="font-bold text-lg">{title}</div>
                   <div>
                     {tags.map((tag) => (
-                      // @ts-ignore
                       <div
-                        key={tag}
+                        key={tag.slug}
                         className="text-[0.9em] my-1 font-bold text-primary-500"
                       >
                         {tag.slug}
@@ -130,7 +128,7 @@ const Example = ({ searchList }: Props) => {
             })),
       },
     ],
-    "",
+    ""
   );
   if (!open) {
     return (

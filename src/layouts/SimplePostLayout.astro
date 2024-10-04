@@ -41,8 +41,8 @@ const articleOgDetails = {
 const { Content, headings } = await post.render();
 
 const postURL = import.meta.env.PROD
-  ? `https://kune-blog.vercel.app/blog/${post.data.title}`
-  : `https://localhost:4321/blog/${post.data.title}`;
+  ? `https://kumneger.vercel.app/blog/${post.data.title}`
+  : `https://localhost:4000/blog/${post.data.title}`;
 ---
 
 <RootLayout
