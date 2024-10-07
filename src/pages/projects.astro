@@ -1,9 +1,7 @@
 ---
 import Card from "@/components/Card.astro";
 import { useTranslations } from "@/i18n";
-
 import RootLayout from "@/layouts/RootLayout.astro";
-
 const t = useTranslations();
 
 export const prerender = true;
@@ -21,7 +19,6 @@ const projectsData = [
 
     description:
       "KPass is an experimental, self-hosted password manager developed with Go and TypeScript",
-
     href: "https://github.com/Kumneger0/kpass",
     imgSrc: "https://placeholder.com/500x190",
   },
@@ -30,6 +27,16 @@ const projectsData = [
     description:
       "TGCloud is a secure and reliable cloud storage solution built on top of Telegram's infrastructure.",
     href: "https://yourtgcloud.vercel.app/",
+    imgSrc: "https://placeholder.com/500x190",
+  },
+  {
+    title: "aicommits(fork)",
+    description:
+      "AI-powered commit message generator I forked and added several features:\n" +
+      "- Ability to choose from a list of open source models.\n" +
+      "- Handles large codebases by splitting them.\n" +
+      "- Generates pull request descriptions and titles.",
+    href: "https://github.com/Kumneger0/aicommits", 
     imgSrc: "https://placeholder.com/500x190",
   }
 ];
