@@ -20,8 +20,8 @@ const DisqusComments = ({
   const disqusShortname = "kune-2";
   const disqusConfig = {
     url: postURL,
-    identifier: post.id, // Single post id
-    title: post.title, // Single post title
+    identifier: post.id,
+    title: post.title,
   };
   return (
     <div>
