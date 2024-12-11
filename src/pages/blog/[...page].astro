@@ -13,9 +13,8 @@ interface Props {
   page: Page;
 }
 
-
-export const prerender = true
-export async function getStaticPaths({ paginate } :any) {
+export const prerender = true;
+export async function getStaticPaths({ paginate }: any) {
   const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
   return paginate(posts, { pageSize: ITEMS_PER_PAGE });
 }
@@ -33,8 +32,8 @@ if (page?.currentPage > 1) {
 
 <!-- <ListLayout title={t('pages.blog.title')} description={t('pages.blog.description')} page={page} {robots} {titleTemplate}/> -->
 <ListWithTagsLayout
-  title={t('pages.blog.title')}
-  description={t('pages.blog.description')}
+  title={t("pages.blog.title")}
+  description={t("pages.blog.description")}
   page={page}
   {robots}
   {titleTemplate}

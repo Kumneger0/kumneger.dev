@@ -24,9 +24,9 @@ interface Props {
 const tags = await getCollection("tags");
 const posts = await getCollection("blog");
 
-function tagCount(slug: CollectionEntry<"tags">["slug"]) {
+function tagCount(slug: CollectionEntry<"tags">["id"]) {
   if (!posts) return 0;
-  return posts.filter((post) => post.data.tags.some((tag) => tag.slug === slug))
+  return posts.filter((post) => post.data.tags.some((tag) => tag.id === slug))
     .length;
 }
 
@@ -78,7 +78,7 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
           }
           <ul>
             {
-              tags.map(({ slug, data }) => (
+              tags.map(({ id:slug, data }) => (
                 <li transition:name={slug} class="my-3">
                   {isSamePath(`/tag/${slug}`) ? (
                     <h3 class="inline py-2 px-3 uppercase text-sm font-bold text-primary-500">
@@ -103,7 +103,7 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
         <ul>
           {
             page?.data?.map(
-              ({ slug, data: { date, title, summary, tags } }) => (
+              ({ id :slug, data: { date, title, summary, tags } }) => (
                 <li class="py-5">
                   <article class="space-y-2 flex flex-col xl:space-y-0">
                     <dl>
@@ -127,7 +127,7 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
                           </Link>
                         </h3>
                         <div class="flex flex-wrap">
-                          {tags.map(({ slug }) => (
+                          {tags.map(({ id:slug }) => (
                             <Tag slug={slug} />
                           ))}
                         </div>

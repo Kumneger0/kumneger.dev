@@ -4,7 +4,7 @@ import SectionContainer from "../components/SectionContainer.astro";
 import PageTitle from "../components/PageTitle.astro";
 import Link from "../components/Link.astro";
 import RootLayout from "./RootLayout.astro";
-import { type CollectionEntry, getEntries } from "astro:content";
+import { type CollectionEntry, getEntries, render } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import Tag from "../components/Tag.astro";
 import ScrollTopAndComments from "@/react/ScrollTopAndComments";
@@ -41,7 +41,7 @@ const articleOgDetails = {
   cover: post.data.cover,
 };
 
-const { Content, headings } = await post.render();
+const { Content, headings } = await render(post);
 const postURL = import.meta.env.PROD
   ? `https://kumneger.vercel.app/blog/${post.data.title}`
   : `https://localhost:4000/blog/${post.data.title}`;
@@ -102,7 +102,7 @@ const postURL = import.meta.env.PROD
               >
                 <!--TODO: Add support for multiple authors-->
                 {
-                  authors.map(({ data, slug }) => (
+                  authors.map(({ data, id: slug }) => (
                     <>
                       <li class="flex items-center space-x-2">
                         {data.avatar && (
@@ -190,7 +190,8 @@ const postURL = import.meta.env.PROD
 
             <div class="prose max-w-none pb-8 pt-10 dark:prose-invert">
               <slot />
-              <Content />
+              fjfjfjfjj
+              <!-- <Content /> -->
             </div>
             {
               ["bottom", "both"].includes(POST_METADATA.showShareButtons) ? (
@@ -249,7 +250,7 @@ const postURL = import.meta.env.PROD
                           {t("layouts.postLayout.previousPost")}
                         </h2>
                         <div class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/blog/${prev.slug}`}>
+                          <Link href={`/blog/${prev.id}`}>
                             {prev.data.title}
                           </Link>
                         </div>
@@ -261,7 +262,7 @@ const postURL = import.meta.env.PROD
                           {t("layouts.postLayout.nextPost")}
                         </h2>
                         <div class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/blog/${next.slug}`}>
+                          <Link href={`/blog/${next.id}`}>
                             {next.data.title}
                           </Link>
                         </div>
@@ -279,7 +280,7 @@ const postURL = import.meta.env.PROD
                     <ul class="flex flex-wrap gap-2 xl:space-x-0 xl:space-y-0">
                       {related.map((post) => (
                         <li class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/blog/${post.slug}`}>
+                          <Link href={`/blog/${post.id}`}>
                             {post.data.title}
                           </Link>
                         </li>

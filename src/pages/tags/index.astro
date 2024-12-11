@@ -1,11 +1,10 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content";
 
-import RootLayout from "@/layouts/RootLayout.astro";
-import Tag from "@/components/Tag.astro";
 import Link from "@/components/Link.astro";
+import Tag from "@/components/Tag.astro";
 import { useTranslations } from "@/i18n";
-import { fade } from "astro:transitions";
+import RootLayout from "@/layouts/RootLayout.astro";
 
 const t = useTranslations();
 
@@ -14,9 +13,9 @@ const posts = await getCollection("blog");
 
 export const prerender = true;
 
-function tagCount(slug: CollectionEntry<"tags">["slug"]) {
+function tagCount(slug: CollectionEntry<"tags">["id"]) {
   if (!posts) return 0;
-  return posts.filter((post) => post.data.tags.some((tag) => tag.slug === slug))
+  return posts.filter((post) => post.data.tags.some((tag) => tag.id === slug))
     .length;
 }
 ---
@@ -41,13 +40,13 @@ function tagCount(slug: CollectionEntry<"tags">["slug"]) {
         tags.map((tag) => {
           return (
             <div class="mb-2 mr-5 mt-2">
-              <Tag transition:name={tag.slug} tag={tag} />
+              <Tag transition:name={tag.id} slug={tag.id} tag={tag} />
               <Link
-                href={`/tags/${tag.slug}`}
+                href={`/tags/${tag.id}`}
                 class="-ml-2 text-sm font-semibold uppercase text-gray-600 dark:text-gray-300"
                 aria-label={t("pages.tags.viewPosts", { tag: tag.data.name })}
               >
-                {` (${tagCount(tag.slug)})`}
+                {` (${tagCount(tag.id)})`}
               </Link>
             </div>
           );

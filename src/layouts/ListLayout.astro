@@ -41,7 +41,7 @@ const hasDefaultSlot = Astro.slots.has("default");
       {
         page.data.map((post) => {
           const {
-            slug,
+            id: slug,
             data: { title, summary, tags },
           } = post;
           return (
@@ -59,7 +59,7 @@ const hasDefaultSlot = Astro.slots.has("default");
                       </Link>
                     </h3>
                     <div class="flex flex-wrap">
-                      {tags.map(({ slug }) => (
+                      {tags.map(({ id:slug }) => (
                         <Tag slug={slug} />
                       ))}
                     </div>

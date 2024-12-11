@@ -5,18 +5,17 @@ import Fuse from "fuse.js";
 
 export type SearchItem = {
   id: string;
-  slug: string;
   body: string;
   collection: string;
   data: {
     tags: {
       collection: "tags";
-      slug: string;
+      id: string;
     }[];
     tagString: string;
     title: string;
     summary: string;
-    slug: string;
+    id: string;
     cover: { src: string };
     date: Date;
   };
@@ -37,13 +36,13 @@ const Example = ({ searchList }: Props) => {
 
   const [inputVal, setInputVal] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[] | null>(
-    null,
+    null
   );
 
-  const postsToSearch = searchList?.map(({ data, slug }) => ({
+  const postsToSearch = searchList?.map(({ data, id }) => ({
     ...data,
-    slug,
-    tagString: data?.tags?.map(({ slug }) => slug).join(","),
+    id,
+    tagString: data?.tags?.map(({ id }) => id).join(","),
   }));
 
   const fuse = useMemo(
@@ -54,7 +53,7 @@ const Example = ({ searchList }: Props) => {
         minMatchCharLength: 2,
         threshold: 0.5,
       }),
-    [searchList],
+    [searchList]
   );
 
   useEffect(() => {
@@ -78,53 +77,49 @@ const Example = ({ searchList }: Props) => {
     }
   }, [inputVal]);
 
-  // const articles = searchResults?.length
-  //   ? searchResults.map(({ item: { title, slug, tags } }) => ({ title, slug, tags }))
-  //   : searchList.map(({data: { title, tags }, slug }) => )
-
   const filteredItems = filterItems(
     [
       {
         id: "",
         heading: "articles",
         items: searchResults?.length
-          ? searchResults?.map(({ item: { title, slug, tags } }) => ({
-              id: slug,
+          ? searchResults?.map(({ item: { title, id, tags } }) => ({
+              id,
               children: (
                 <div>
                   <div className="font-bold text-lg">{title}</div>
                   <div>
                     {tags.map((tag) => (
                       <div
-                        key={tag.slug}
+                        key={tag.id}
                         className="text-[0.9em] my-1 font-bold text-primary-500"
                       >
-                        {tag.slug}
+                        {tag.id}
                       </div>
                     ))}
                   </div>
                 </div>
               ),
-              href: `/blog/${slug}`,
+              href: `/blog/${id}`,
             }))
-          : searchList?.map(({ data: { title, tags }, slug }) => ({
-              id: slug,
+          : searchList?.map(({ data: { title, tags }, id }) => ({
+              id,
               children: (
                 <div>
                   <div className="font-bold text-lg">{title}</div>
                   <div>
                     {tags.map((tag) => (
                       <div
-                        key={tag.slug}
+                        key={tag.id}
                         className="text-[0.9em] my-1 font-bold text-primary-500"
                       >
-                        {tag.slug}
+                        {tag.id}
                       </div>
                     ))}
                   </div>
                 </div>
               ),
-              href: `/blog/${slug}`,
+              href: `/blog/${id}`,
             })),
       },
     ],

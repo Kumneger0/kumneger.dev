@@ -7,7 +7,7 @@ import { SEO } from "astro-seo";
 import { getEntry, type CollectionEntry } from "astro:content";
 import Favicon from "@/assets/favicon.svg";
 import { getImage } from "astro:assets";
-import SpeedInsights from '@vercel/speed-insights/astro'
+import SpeedInsights from "@vercel/speed-insights/astro";
 interface Props {
   title: string;
   description: string;
@@ -60,13 +60,13 @@ if (article?.cover) {
   });
 }
 
-const twitterCreator = article?.authorTwitter || creator.data.twitter;
+const twitterCreator = article?.authorTwitter || creator?.data.twitter;
 ---
 
 <head>
   <SEO
     title={title}
-  {titleTemplate}
+    {titleTemplate}
     titleDefault={SITE_METADATA?.title}
     description={description}
     nofollow={robots.includes("nofollow")}
@@ -92,7 +92,7 @@ const twitterCreator = article?.authorTwitter || creator.data.twitter;
         { rel: "apple-touch-icon", sizes: "76x76", href: appleTouchIcon.src },
         { rel: "icon", type: "image/svg", sizes: "32x32", href: favicon32.src },
 
-        { rel: "icon", type: "image/svg",      sizes: "16x16", href: favicon16.src },
+        { rel: "icon", type: "image/svg", sizes: "16x16", href: favicon16.src },
         //@ts-ignore
         { rel: "mask-icon", href: favicon16.src, color: "black" },
         { rel: "alternate", type: "application/rss+xml", href: "/rss.xml" },
@@ -143,5 +143,8 @@ const twitterCreator = article?.authorTwitter || creator.data.twitter;
     }}
   />
   <ViewTransitions />
-<meta name="google-site-verification" content="oDVfNqx1QrRnGvkWz-i646WtX-rsZn1h2J7jdBwyHvU" />
+  <meta
+    name="google-site-verification"
+    content="oDVfNqx1QrRnGvkWz-i646WtX-rsZn1h2J7jdBwyHvU"
+  />
 </head>

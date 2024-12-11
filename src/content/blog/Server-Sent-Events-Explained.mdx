@@ -1,6 +1,7 @@
 ---
 title: Server-Sent Events Explained
 author: kumneger wondimu
+postLayout: "simple"
 date: "2024-07-27"
 tags: ["hono", "bun"]
 cover: "@/assets/server-sent-events.jpeg"
@@ -91,7 +92,7 @@ app.get("/sse", async (c) => {
           event: "user-leave",
         }),
       );
-      console.log(`user ${userID} disconnected`);
+      
     });
 
     while (true) {
@@ -186,7 +187,7 @@ function handleSSEConnection() {
 
   eventSource.addEventListener("new-user", (event) => {
     const user = JSON.parse(event.data);
-    console.log(user);
+    
     showUser(user);
     showUserJoinAndLeaveMessage(user, true);
   });

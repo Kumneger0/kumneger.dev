@@ -12,7 +12,6 @@ const DisqusComments = ({
   useEffect(() => {
     window.onstorage = () => {
       const theme = localStorage.getItem("theme");
-      console.log("theme", theme);
     };
 
     return () => {};

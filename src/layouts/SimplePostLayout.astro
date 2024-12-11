@@ -3,7 +3,7 @@ import SectionContainer from "../components/SectionContainer.astro";
 import PageTitle from "../components/PageTitle.astro";
 import Link from "../components/Link.astro";
 import RootLayout from "./RootLayout.astro";
-import { type CollectionEntry, getEntries } from "astro:content";
+import { type CollectionEntry, getEntries, render } from "astro:content";
 import FormattedDate from "../components/FormattedDate.astro";
 import ScrollTopAndComments from "@/react/ScrollTopAndComments";
 import PostCover from "../components/PostCover.astro";
@@ -38,7 +38,7 @@ const articleOgDetails = {
   cover: post.data.cover,
 };
 
-const { Content, headings } = await post.render();
+const { Content, headings } = await render(post);
 
 const postURL = import.meta.env.PROD
   ? `https://kumneger.vercel.app/blog/${post.data.title}`
@@ -157,7 +157,7 @@ const postURL = import.meta.env.PROD
               prev && (
                 <div class="pt-4 xl:pt-8">
                   <Link
-                    href={`/blog/${prev.slug}`}
+                    href={`/blog/${prev.id}`}
                     class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                     aria-label={t("layouts.postLayout.previousPost", {
                       title: prev.data.title,
@@ -172,7 +172,7 @@ const postURL = import.meta.env.PROD
               next && (
                 <div class="pt-4 xl:pt-8">
                   <Link
-                    href={`/blog/${next.slug}`}
+                    href={`/blog/${next.id}`}
                     class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                     aria-label={t("layouts.postLayout.nextPost", {
                       title: next.data.title,
@@ -189,4 +189,4 @@ const postURL = import.meta.env.PROD
     </article>
   </SectionContainer>
 </RootLayout>
-<AttachCopyAndProgressBar  />
+<AttachCopyAndProgressBar />
