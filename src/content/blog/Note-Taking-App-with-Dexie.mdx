@@ -1,0 +1,209 @@
+---
+title: Building a Note-Taking App with Dexie
+date: '2025-01-22'
+summary: Learn about Dexie, a powerful wrapper for IndexedDB that simplifies database operations in JavaScript.
+tags: ["dexie"]
+cover: "@/assets/dexie-note-taking.jpeg"
+---
+
+Hey folks, it's been a while since I last wrote a blog post. I've been busy with work and other things.
+
+Recently, I came across an npm package called Dexie, which is a wrapper for [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) that makes working with IndexedDB a lot easier.
+
+I used Dexie for [TGCloud](https://yourtgcloud.vercel.app/) to cache user files in the browser, and I had an amazing experience with it. I feel like I should write a blog post about it.
+
+In this post, we will build a small note-taking app with Dexie and Vanilla JS. The code for this project is available in the [GitHub repository](https://github.com/Kumneger0/Dexie-example).
+
+# Get Started
+
+To get started, we need to create a new project with Vite and install the necessary dependencies.
+I'm going to use Tailwind CSS for styling. Instead of installing Tailwind CSS, I will use the CDN for simplicity.
+
+Remove the content of the body and replace it with the following code:
+
+```html
+<body>
+  <div
+    class="flex max-w-screen-md mx-auto flex-col items-center justify-center mt-10"
+  >
+    <textarea
+      id="note-input"
+      class="w-full h-32 p-2 border rounded-md"
+      placeholder="Type your notes here..."
+    ></textarea>
+    <button
+      id="save-button"
+      class="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+    >
+      Save
+    </button>
+  </div>
+  <div id="notes" class="max-w-screen-md mx-auto mt-10">
+    <h1>Notes</h1>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+```
+
+I have a `<textarea>` element to get the note, a button to save the note, and a `<div>` with the ID of `notes` to render the list of notes. It's pretty basic
+
+# Adding Dexie
+
+To use Dexie, the first thing we need to do is create a Dexie instance and declare our tables and indexes, as shown in the code below:
+
+```tsx
+interface Note {
+  id: number;
+  data: string;
+}
+
+const noteDb = new Dexie("Note") as Dexie & {
+  note: EntityTable<Note, "id">;
+};
+
+noteDb.version(1).stores({
+  note: "++id, data",
+});
+
+```
+
+I'm using TypeScript for a better experience. We created a Dexie instance and declared our table. We'll use this instance to interact with the underlying IndexedDB
+
+Our `note` table has two fields: `id` and `data`. The `id` is auto-incremented whenever we add new data to the table.
+
+# Displaying notes
+
+The function below takes an array of notes and displays them in the UI. I'm also using `document.createElement` to create elements with JavaScript and adding some Tailwind classes to make it look good.
+
+```tsx
+
+async function renderNotes(notes: Note[] = []) {
+  const wrapper = document.createElement("div");
+
+  for (const note of notes) {
+    const div = document.createElement("div");
+    div.className = "bg-white shadow-md rounded-lg p-4 mb-4";
+
+    div.setAttribute("id", note.id.toString());
+
+    const p = document.createElement("p");
+    p.textContent = note.data;
+    p.className = "text-gray-800 text-lg";
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.className =
+      "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600";
+
+    // Edit button event handler
+    editButton.addEventListener("click", () => {
+      const editInputElement = document.createElement("input");
+      editInputElement.value = note.data;
+      div.replaceChildren(editInputElement);
+      editInputElement.focus();
+      editInputElement.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") {
+          editNote(note.id, editInputElement.value);
+          editInputElement.blur();
+        }
+      });
+    });
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.className =
+      "bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2";
+
+    // Delete button event handler
+    deleteButton.addEventListener("click", () => {
+      deleteNote(note.id);
+    });
+
+    div.appendChild(p);
+    div.appendChild(editButton);
+    div.appendChild(deleteButton);
+
+    wrapper.appendChild(div);
+  }
+  notesWrapper.replaceChildren(wrapper);
+}
+
+```
+
+You can see I'm also adding buttons for editing and deleting notes, and I'll explain those later 
+
+# Edit Notes
+
+To edit our note, we just need to call `noteDb.note.update` along with the `id` and the new data we want to update. It's that simple!
+
+```tsx
+const editNote = (id: number, newValue: string) => {
+  noteDb.note.update(id, { data: newValue });
+};
+```
+
+# Delete Notes
+
+To delete out note we simple need to call `noteDb.note.delete`  by providing id of the note
+
+```tsx
+const deleteNote = (id: number) => {
+  noteDb.note.delete(id);
+}
+```
+
+finally, we can use the `liveQuery` function from Dexie to subscribe to changes in the database. This lets us listen for any updates. To use `liveQuery`, we just need to call it with a callback function, and it will return an object that has a `subscribe` function. We can use that function to subscribe to changes.
+
+```tsx
+const notesObservable = liveQuery(() => noteDb.note.toArray());
+const subscription = notesObservable.subscribe({
+  next(value) {
+    renderNotes(value)
+  },
+  error(err) {
+    console.error("Error: ", err);
+  },
+})
+window.onbeforeunload = () => {
+  subscription.unsubscribe();
+}
+```
+
+The `next` function will get executed every time we make a change to our database.
+
+The `subscribe` function returns a subscription object that we can use to listen for changes.
+
+you can also sync your database with dexie cloud by using their `dexie-cloud-addon` package here is how u can do it 
+
+```tsx
+const noteDb = new Dexie("Note", {addons: [dexieCloud]}) as Dexie & {
+  note: EntityTable<Note, "id">;
+};
+
+noteDb.version(1).stores({
+  note: "@id, data",
+});
+
+noteDb.cloud.configure({
+    databaseUrl: "https://<yourdatabase>.dexie.cloud",
+    requireAuth: false // optional
+  });
+```
+
+We also needed to change `++id` to `@id` to switch from auto-incremented to autogenerated.
+
+Then we configured our `databaseUrl`. You could use their CLI to get the `databaseUrl`:
+
+```bash
+npx dexie-cloud create
+
+```
+
+Follow the prompts to create the database, and you also needed to whitelist your app origin using the command below; otherwise, it wouldn't work.
+
+```bash
+npx dexie-cloud whitelist http://localhost:3000 
+```
+
+I hope you enjoyed the article! Feel free to share your thoughts in the comment section
