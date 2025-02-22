@@ -6,7 +6,7 @@
 export const SITE_METADATA = {
   title: "Kumneger Wondimu",
   theme: "system",
-  siteUrl: "https://kumneger.vercel.app",
+  siteUrl: "https://kumneger.dev",
   siteRepo: "https://github.com/kumneger0/kumneger-app",
   robots: "index, follow",
   email: "kumnegerwondimu@gmail.com",
