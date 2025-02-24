@@ -100,7 +100,7 @@ const Example = ({ searchList }: Props) => {
                   </div>
                 </div>
               ),
-              href: `/blog/${id}`,
+            href: `/${id}`,
             }))
           : searchList?.map(({ data: { title, tags }, id }) => ({
               id,
@@ -119,7 +119,7 @@ const Example = ({ searchList }: Props) => {
                   </div>
                 </div>
               ),
-              href: `/blog/${id}`,
+            href: `/${id}`,
             })),
       },
     ],

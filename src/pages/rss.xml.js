@@ -15,7 +15,7 @@ export async function GET(context) {
       categories: tags.map(({ slug }) => slug), // TODO: add tags name in the future
       pubDate: date,
       description: summary,
-      link: `/blog/${slug}/`,
+      link: `/${slug}/`,
     })),
   });
 }

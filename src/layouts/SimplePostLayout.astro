@@ -13,6 +13,9 @@ import { POST_METADATA } from "@/consts";
 import { useTranslations } from "@/i18n";
 import DisqusComments from "@/components/react/comments";
 import AttachCopyAndProgressBar from "../components/AttachCopyAndProgressBar.astro";
+import { POST_METADATA, SITE_METADATA } from "@/consts";
+
+
 
 const t = useTranslations();
 
@@ -41,8 +44,8 @@ const articleOgDetails = {
 const { Content, headings } = await render(post);
 
 const postURL = import.meta.env.PROD
-  ? `https://kumneger.vercel.app/blog/${post.data.title}`
-  : `https://localhost:4000/blog/${post.data.title}`;
+  ? `${SITE_METADATA.siteUrl}/${post.data.title}`
+  : `https://localhost:4000/${post.data.title}`;
 ---
 
 <RootLayout
@@ -157,7 +160,7 @@ const postURL = import.meta.env.PROD
               prev && (
                 <div class="pt-4 xl:pt-8">
                   <Link
-                    href={`/blog/${prev.id}`}
+                    href={`/${prev.id}`}
                     class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                     aria-label={t("layouts.postLayout.previousPost", {
                       title: prev.data.title,
@@ -172,7 +175,7 @@ const postURL = import.meta.env.PROD
               next && (
                 <div class="pt-4 xl:pt-8">
                   <Link
-                    href={`/blog/${next.id}`}
+                    href={`/${next.id}`}
                     class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                     aria-label={t("layouts.postLayout.nextPost", {
                       title: next.data.title,

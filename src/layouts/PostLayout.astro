@@ -11,7 +11,7 @@ import ScrollTopAndComments from "@/react/ScrollTopAndComments";
 import PostCover from "../components/PostCover.astro";
 import DetailsSummary from "../components/DetailsSummary.astro";
 import SocialShareButtons from "../components/social-icons/SocialShareButtons.astro";
-import { POST_METADATA } from "@/consts";
+import { POST_METADATA, SITE_METADATA } from "@/consts";
 import { useTranslations } from "@/i18n";
 import DisqusComments from "@/react/comments";
 import { fade } from "astro:transitions";
@@ -43,8 +43,8 @@ const articleOgDetails = {
 
 const { Content, headings } = await render(post);
 const postURL = import.meta.env.PROD
-  ? `https://kumneger.vercel.app/blog/${post.data.title}`
-  : `https://localhost:4000/blog/${post.data.title}`;
+  ? `${SITE_METADATA.siteUrl}/${post.data.title}`
+  : `https://localhost:4000/${post.data.title}`;
 ---
 
 <RootLayout
@@ -249,7 +249,7 @@ const postURL = import.meta.env.PROD
                           {t("layouts.postLayout.previousPost")}
                         </h2>
                         <div class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/blog/${prev.id}`}>
+                          <Link href={`/${prev.id}`}>
                             {prev.data.title}
                           </Link>
                         </div>
@@ -261,7 +261,7 @@ const postURL = import.meta.env.PROD
                           {t("layouts.postLayout.nextPost")}
                         </h2>
                         <div class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/blog/${next.id}`}>
+                          <Link href={`/${next.id}`}>
                             {next.data.title}
                           </Link>
                         </div>
@@ -279,7 +279,7 @@ const postURL = import.meta.env.PROD
                     <ul class="flex flex-wrap gap-2 xl:space-x-0 xl:space-y-0">
                       {related.map((post) => (
                         <li class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/blog/${post.id}`}>
+                          <Link href={`/${post.id}`}>
                             {post.data.title}
                           </Link>
                         </li>
@@ -291,7 +291,7 @@ const postURL = import.meta.env.PROD
             </div>
             <div class="pt-4 xl:pt-8">
               <Link
-                href="/blog"
+                href=""
                 class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                 aria-label={t("layouts.postLayout.backToBlog")}
               >

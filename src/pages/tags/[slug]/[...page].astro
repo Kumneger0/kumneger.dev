@@ -1,15 +1,12 @@
 ---
 import { getCollection, type CollectionEntry, render } from "astro:content";
 
-// import ListLayout from "@/layouts/ListLayout.astro";
 import { ITEMS_PER_PAGE } from "@/consts";
 import { excludeDrafts, sortBlogPosts } from "@/functions";
 import ListWithTagsLayout from "@/layouts/ListWithTagsLayout.astro";
 import type { Page } from "astro";
 import { useTranslations } from "@/i18n";
-
 const t = useTranslations();
-
 interface Props {
   page: Page<CollectionEntry<"blog">>;
   entry: CollectionEntry<"tags">;
@@ -33,16 +30,14 @@ export async function getStaticPaths({ paginate }: any) {
 }
 
 const { page, entry } = Astro.props;
-
 const Render = await render(entry);
-
 const Content = Render.Content;
 
 let robots;
 let titleTemplate = "";
 if (page?.currentPage > 1) {
   robots = "noindex, follow";
-  titleTemplate = t("seo.pagination.page", { page: `${page?.currentPage}` }); // `%s - Page ${page.currentPage}`;
+  titleTemplate = t("seo.pagination.page", { page: `${page?.currentPage}` }); 
 }
 ---
 

@@ -6,7 +6,7 @@ export const ui = {
     "siteMetadata.title": "Kumneger Wondimu",
     "siteMetadata.headerTitle": "Kumneger Wondimu",
     "siteMetadata.description":
-      "Empower your web development journey with our expertly curated blog. Discover insider tips, cutting-edge techniques, and practical insights to craft stunning websites with confidence",
+      "Take your web dev skills to the next level with our blog",
     "siteMetadata.language": "en-US",
 
     // Pages
