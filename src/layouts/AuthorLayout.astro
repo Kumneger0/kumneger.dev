@@ -3,13 +3,10 @@ import { Image } from "astro:assets";
 import { type CollectionEntry, getCollection } from "astro:content";
 
 import SocialIcon from "@/components/social-icons/index.astro";
-import RootLayout from "./RootLayout.astro";
 import Link from "../components/Link.astro";
-import { sortBlogPosts } from "../functions";
 import { ITEMS_PER_PAGE } from "../consts";
-import { useTranslations } from "@/i18n";
-
-const t = useTranslations();
+import RootLayout from "./Layout.astro";
+import FormattedDate from "../components/FormattedDate.astro";
 
 interface Props {
   content: CollectionEntry<"authors">["data"];
@@ -28,34 +25,26 @@ const {
   shortBio,
 } = Astro.props.content;
 
-// Get the author's posts
 const authorPosts = await getCollection(
   "blog",
   ({ data: { authors, draft } }) => {
     return !draft && authors.some((author) => author.id === Astro.props.slug);
   }
 )
-  .then(sortBlogPosts)
+  .then((blogs) =>
+    blogs.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  )
   .then((posts) => {
     return posts.slice(0, ITEMS_PER_PAGE).map((post) => {
-      return { title: post.data.title, slug: post.id };
+      return { title: post.data.title, slug: post.id, date: post.data.date };
     });
   });
 ---
 
 <RootLayout title={name} description={shortBio}>
-  <div class="divide-y divide-gray-200 dark:divide-gray-700">
-    <div class="space-y-2 pb-8 pt-6 md:space-y-5">
-      <h1
-        class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14"
-      >
-        {t("layouts.authorLayout.aboutAuthor", { name })}
-      </h1>
-    </div>
-    <div
-      class="items-start space-y-2 xl:grid xl:grid-cols-3 xl:gap-x-8 xl:space-y-0"
-    >
-      <div class="flex flex-col items-center space-x-2 pt-8">
+  <div class="w-full max-w-6xl px-4 mx-auto sm:px-6">
+    <div class="py-12">
+      <div class="text-center mb-12">
         {
           avatar && (
             <Image
@@ -63,38 +52,75 @@ const authorPosts = await getCollection(
               alt="avatar"
               width={192}
               height={192}
-              class="h-48 w-48 rounded-2xl drop-shadow-md"
+              class="h-48 w-48 mx-auto rounded-full"
             />
           )
         }
-        <h2 class="pb-2 pt-4 text-2xl font-bold leading-8 tracking-tight">
+        <h1 class="mt-6 text-4xl font-bold text-gray-900 dark:text-gray-100">
           {name}
-        </h2>
-        <div class="text-gray-500 dark:text-gray-400">{occupation}</div>
-        <div class="flex space-x-3 pt-6">
+        </h1>
+        <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
+          {occupation}
+        </p>
+        <div class="flex justify-center space-x-5 mt-6">
           {email && <SocialIcon kind="mail" href={`mailto:${email}`} />}
           {github && <SocialIcon kind="github" href={github} />}
           {linkedin && <SocialIcon kind="linkedin" href={linkedin} />}
           {twitter && <SocialIcon kind="twitter" href={twitter} />}
         </div>
       </div>
-      <div class="xl:col-span-2 max-w-none d-flex">
-        <div class="prose pb-8 pt-8 dark:prose-invert">
+
+      <div class="max-w-3xl mx-auto">
+        <div class="prose prose-lg dark:prose-invert mx-auto">
           <slot />
         </div>
+
         {
           authorPosts.length > 0 && (
-            <div class="pt-8">
-              <h2 class="text-2xl font-bold leading-8 tracking-tight">
-                {t("layouts.authorLayout.latestPosts")}
+            <div class="mt-16">
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                Recent Articles
               </h2>
-              <ul class="space-y-4 mt-4">
-                {authorPosts.map(({ slug, title }) => (
-                  <li>
-                    <Link href={`/blog/${slug}`}>{title}</Link>
+              <ul class="space-y-4">
+                {authorPosts.map(({ slug, title, date }) => (
+                  <li class="group">
+                    <div class="flex flex-col">
+                      <Link
+                        transition:name={title}
+                        href={`/blog/${slug}`}
+                        class="text-lg text-gray-800 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                      >
+                        {title}
+                      </Link>
+                      <span class="text-sm text-gray-500 dark:text-gray-400">
+                        <FormattedDate date={date} />
+                      </span>
+                    </div>
                   </li>
                 ))}
               </ul>
+              <div class="mt-8">
+                <Link
+                  href="/blog"
+                  class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300"
+                >
+                  View all posts
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="ml-1 h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </Link>
+              </div>
             </div>
           )
         }

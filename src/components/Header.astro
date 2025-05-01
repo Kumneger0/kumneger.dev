@@ -1,44 +1,31 @@
 ---
-import { SITE_METADATA, NAVIGATION } from "@/consts";
+import { NAVIGATION } from "@/consts";
+import ThemeSwitcher from "@/react/ThemeSwitcher";
 import HeaderLink from "./HeaderLink.astro";
 import Logo from "./Logo.astro";
-import MobileNav from "@/react/MobileNav";
-import ThemeSwitcher from "@/react/ThemeSwitcher";
-import SearchCommandPallete from "@/react/searchCommandPallete";
-import { useTranslations } from "@/i18n";
-
-import { getCollection } from "astro:content";
-
-const posts = await getCollection("blog");
-
-const t = useTranslations();
 ---
 
-<header class="flex items-center justify-between py-10">
+<header
+  class="flex items-center justify-between py-10 max-w-6xl w-11/12 mx-auto"
+>
   <div class="mr-3 md:w-40 w-20">
-    <a href="/" aria-label={t("siteMetadata.headerTitle")}>
+    <a href="/" aria-label={"Kumneger Wondimu"}>
       <Logo class="w-full" />
     </a>
   </div>
-  <div class="flex items-center leading-5 space-x-4 sm:space-x-6">
+  <div class="flex items-center leading-5 space-x-4">
     {
       NAVIGATION.filter((link) => link.href !== "/").map((link) => (
         <HeaderLink
           href={link.href}
-          class="hidden sm:block font-medium text-gray-900 dark:text-gray-100"
+          class="block font-medium text-gray-900 dark:text-gray-100"
         >
-          {t(link.title)}
+          {link.title}
         </HeaderLink>
       ))
     }
     <div class="flex gap-4 items-center">
-      <div>
-        <!-- @ts-ignore -->
-        <SearchCommandPallete searchList={posts} client:load="react" />
-      </div>
-
       <ThemeSwitcher client:only="react" />
-      <MobileNav client:only="react" />
     </div>
   </div>
 </header>

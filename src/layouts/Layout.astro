@@ -1,14 +1,8 @@
 ---
+import Header from "@/components/Header.astro";
 import type { CollectionEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import SectionContainer from "../components/SectionContainer.astro";
-
-//@ts-ignore
-import { useTranslations } from "@/i18n";
-
-const t = useTranslations();
 
 type Props = {
   title: string;
@@ -26,19 +20,15 @@ type Props = {
 };
 ---
 
-<html lang={t("siteMetadata.language")} class="scroll-smooth">
+<html lang={"en"} class="scroll-smooth">
   <BaseHead {...Astro.props} />
   <body
     class="bg-white text-black antialiased dark:bg-gray-950 dark:text-white"
   >
-    <SectionContainer>
-      <div class="flex h-screen flex-col justify-between font-sans">
-        <Header />
-        <main class="mb-auto">
-          <slot />
-        </main>
-        <Footer />
-      </div>
-    </SectionContainer>
+    <Header />
+    <div class="flex h-screen flex-col justify-between font-sans">
+      <slot />
+      <Footer />
+    </div>
   </body>
 </html>

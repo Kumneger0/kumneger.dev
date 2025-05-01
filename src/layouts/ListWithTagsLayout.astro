@@ -3,15 +3,11 @@ import { getCollection } from "astro:content";
 import { type CollectionEntry } from "astro:content";
 
 import Link from "../components/Link.astro";
-import Pagination from "../components/Pagination.astro";
-import RootLayout from "./RootLayout.astro";
+import RootLayout from "./Layout.astro";
 import Tag from "../components/Tag.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import type { Page } from "astro";
-import { useTranslations } from "@/i18n";
 import { fade } from "astro:transitions";
-
-const t = useTranslations();
 
 interface Props {
   title: string;
@@ -36,19 +32,11 @@ function isSamePath(path: string) {
 
 const { title, description, robots, page, titleTemplate } = Astro.props;
 const hasDefaultSlot = Astro.slots.has("default");
-const isBlogPage = Astro.url.pathname.startsWith("/blog");
 ---
 
 <RootLayout {title} {description} {robots} {titleTemplate}>
   <div>
     <div class="pb-6 pt-6">
-      <h1
-        transition:name={title}
-        transition:animate={fade({ duration: "0.4" })}
-        class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14"
-      >
-        {title}
-      </h1>
       {
         hasDefaultSlot && (
           <div class="prose dark:prose-invert py-4">
@@ -62,23 +50,10 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
         class="hidden max-h-screen h-full sm:flex flex-wrap bg-gray-50 dark:bg-gray-900/70 shadow-md pt-5 dark:shadow-gray-800/40 rounded min-w-[280px] max-w-[280px] overflow-auto"
       >
         <div class="py-4 px-6">
-          {
-            isBlogPage ? (
-              <h3 class="text-primary-500 font-bold uppercase">
-                {t("layouts.listWithTagsLayout.allPosts")}
-              </h3>
-            ) : (
-              <Link
-                href="/blog"
-                class="font-bold uppercase text-gray-700 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-500"
-              >
-                {t("layouts.listWithTagsLayout.allPosts")}
-              </Link>
-            )
-          }
+          {(<h3 class="text-primary-500 font-bold uppercase">All posts</h3>)}
           <ul>
             {
-              tags.map(({ id:slug, data }) => (
+              tags.map(({ id: slug, data }) => (
                 <li transition:name={slug} class="my-3">
                   {isSamePath(`/tag/${slug}`) ? (
                     <h3 class="inline py-2 px-3 uppercase text-sm font-bold text-primary-500">
@@ -103,13 +78,11 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
         <ul>
           {
             page?.data?.map(
-              ({ id :slug, data: { date, title, summary, tags } }) => (
+              ({ id: slug, data: { date, title, summary, tags } }) => (
                 <li class="py-5">
                   <article class="space-y-2 flex flex-col xl:space-y-0">
                     <dl>
-                      <dt class="sr-only">
-                        {t("layouts.listWithTagsLayout.publishedAt")}
-                      </dt>
+                      <dt class="sr-only">published At</dt>
                       <dd class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                         <FormattedDate date={date} />
                       </dd>
@@ -118,7 +91,7 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
                       <div>
                         <h3 class="text-2xl font-bold leading-8 tracking-tight">
                           <Link
-                            href={`/blog/${slug}`}
+                            href={`/${slug}`}
                             class="text-gray-900 dark:text-gray-100"
                             transition:name={title}
                             transition:animate={fade({ duration: "0.4" })}
@@ -127,7 +100,7 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
                           </Link>
                         </h3>
                         <div class="flex flex-wrap">
-                          {tags.map(({ id:slug }) => (
+                          {tags.map(({ id: slug }) => (
                             <Tag slug={slug} />
                           ))}
                         </div>
@@ -142,7 +115,6 @@ const isBlogPage = Astro.url.pathname.startsWith("/blog");
             )
           }
         </ul>
-        {(page?.url?.next || page?.url?.prev) && <Pagination page={page} />}
       </div>
     </div>
   </div>

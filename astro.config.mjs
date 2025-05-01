@@ -1,11 +1,13 @@
+// @ts-check
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
-import tailwind from "@astrojs/tailwind";
 import vercel from "@astrojs/vercel";
 import metaTags from "astro-meta-tags";
 import { defineConfig } from "astro/config";
 import { SITE_METADATA } from "./src/consts.ts";
+import tailwindcss from "@tailwindcss/vite";
+
 
 import robotsTxt from "astro-robots-txt";
 
@@ -16,13 +18,15 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap(),
-    tailwind(),
     metaTags(),
     robotsTxt(),
     react({
       include: ["**/react/*"],
     }),
   ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
   output: "server",
   adapter: vercel({
     webAnalytics: {
@@ -33,3 +37,4 @@ export default defineConfig({
     port: 4000,
   },
 });
+

@@ -1,39 +1,28 @@
 ---
-import { getCollection } from "astro:content";
-// import ListLayout from "@/layouts/ListLayout.astro";
 import { ITEMS_PER_PAGE } from "@/consts";
-import { sortBlogPosts, excludeDrafts } from "@/functions";
-import ListWithTagsLayout from "@/layouts/ListWithTagsLayout.astro";
-import type { Page } from "astro";
-import { useTranslations } from "@/i18n";
+import ListLayout from "@/layouts/ListLayout.astro";
+import { getCollection } from "astro:content";
 
-const t = useTranslations();
-
-interface Props {
-  page: Page;
-}
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 
 export const prerender = true;
-export async function getStaticPaths({ paginate }: any) {
-  const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
   return paginate(posts, { pageSize: ITEMS_PER_PAGE });
-}
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { page } = Astro.props;
 let titleTemplate = "";
 let robots;
-
-if (page?.currentPage > 1) {
-  titleTemplate = t("seo.pagination.page", { page: `${page?.currentPage}` });
-  // Ask search engines to not index paginated pages
-  robots = "noindex, follow";
-}
 ---
 
-<!-- <ListLayout title={t('pages.blog.title')} description={t('pages.blog.description')} page={page} {robots} {titleTemplate}/> -->
-<ListWithTagsLayout
-  title={t("pages.blog.title")}
-  description={t("pages.blog.description")}
+<ListLayout
+  title={"Blog"}
+  description={"All blog posts"}
   page={page}
   {robots}
   {titleTemplate}

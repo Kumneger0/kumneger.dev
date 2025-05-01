@@ -1,7 +1,4 @@
 import { useEffect, useRef } from "react";
-import { useTranslations } from "@/i18n";
-
-const t = useTranslations();
 
 export default function ScrollTopAndComments() {
   let divRef = useRef<HTMLDivElement>(null);
@@ -26,7 +23,7 @@ export default function ScrollTopAndComments() {
       ref={divRef}
     >
       <button
-        aria-label={t("components.scrollTopAndComments.scrollTop")}
+        aria-label={"scroll to Top"}
         onClick={handleScrollToTop}
         className="rounded-full bg-gray-200 p-2 text-gray-500 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"
       >
