@@ -1,27 +1,40 @@
 // @ts-check
+import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
+import vercel from "@astrojs/vercel";
+import metaTags from "astro-meta-tags";
 import { defineConfig } from "astro/config";
+import { SITE_METADATA } from "./src/consts.ts";
 import tailwindcss from "@tailwindcss/vite";
 
-import sitemap from "@astrojs/sitemap";
 
-import mdx from "@astrojs/mdx";
+import robotsTxt from "astro-robots-txt";
 
-import react from "@astrojs/react";
-
+// https://astro.build/config
 export default defineConfig({
-  site: "https://kumneger.dev",
-  server: {
-    port: 3000,
-  },
-  vite: {
-    plugins: [tailwindcss()],
-  },
-
+  prefetch: true,
+  site: SITE_METADATA.siteUrl,
   integrations: [
-    sitemap(),
     mdx(),
+    sitemap(),
+    metaTags(),
+    robotsTxt(),
     react({
       include: ["**/react/*"],
     }),
   ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  output: "server",
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
+  server: {
+    port: 4000,
+  },
 });
+
