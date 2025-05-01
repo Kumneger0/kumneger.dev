@@ -3,10 +3,7 @@ import { type CollectionEntry, getCollection } from "astro:content";
 
 import Link from "@/components/Link.astro";
 import Tag from "@/components/Tag.astro";
-import { useTranslations } from "@/i18n";
-import RootLayout from "@/layouts/RootLayout.astro";
-
-const t = useTranslations();
+import RootLayout from "@/layouts/Layout.astro";
 
 const tags = await getCollection("tags");
 const posts = await getCollection("blog");
@@ -18,37 +15,86 @@ function tagCount(slug: CollectionEntry<"tags">["id"]) {
   return posts.filter((post) => post.data.tags.some((tag) => tag.id === slug))
     .length;
 }
+
+const sortedTags = [...tags]
+  .filter((tag) => tagCount(tag.id) > 0)
+  .sort((a, b) => {
+    const countA = tagCount(a.id);
+    const countB = tagCount(b.id);
+    return countB - countA;
+  });
 ---
 
-<RootLayout
-  title={t("pages.tags.title")}
-  description={t("pages.tags.description")}
->
-  <div
-    class="flex flex-col items-start justify-start divide-y divide-gray-200 dark:divide-gray-700 md:mt-24 md:flex-row md:items-center md:justify-center md:space-x-6 md:divide-y-0"
-  >
-    <div class="space-x-2 pb-8 pt-6 md:space-y-5">
+<RootLayout title={"Tags"} description={"All tags used in the blog"}>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+    <div class="space-y-2 pb-8 pt-6 md:space-y-5 text-center">
       <h1
-        class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:border-r-2 md:px-6 md:text-6xl md:leading-14"
+        class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14"
       >
-        {t("pages.tags.allTags")}
+        All Tags
       </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
+        Browse articles by topic
+      </p>
     </div>
-    <div class="flex max-w-lg flex-wrap">
-      {!tags.length && t("pages.tags.noTags")}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
       {
-        tags.map((tag) => {
+        !sortedTags.length && (
+          <div class="col-span-full text-center py-10">
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+              No tags found
+            </p>
+          </div>
+        )
+      }
+
+      {
+        sortedTags.map((tag) => {
+          const count = tagCount(tag.id);
           return (
-            <div class="mb-2 mr-5 mt-2">
-              <Tag transition:name={tag.id} slug={tag.id} tag={tag} />
-              <Link
-                href={`/tags/${tag.id}`}
-                class="-ml-2 text-sm font-semibold uppercase text-gray-600 dark:text-gray-300"
-                aria-label={t("pages.tags.viewPosts", { tag: tag.data.name })}
-              >
-                {` (${tagCount(tag.id)})`}
-              </Link>
-            </div>
+            <Link
+              href={`/tags/${tag.id}`}
+              class="group flex flex-col h-full bg-white dark:bg-gray-900 transition-colors duration-300"
+            >
+              <div class="p-6 flex flex-col h-full">
+                <div class="flex items-center justify-between mb-3">
+                  <h2
+                    transition:name={tag.data.name}
+                    class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                  >
+                    {tag.data.name}
+                  </h2>
+                  <span class="bg-primary-50 dark:bg-gray-800 text-primary-800 dark:text-primary-300 text-sm font-medium px-3 py-1">
+                    {count} {count === 1 ? "post" : "posts"}
+                  </span>
+                </div>
+
+                {tag.data.description && (
+                  <p class="text-gray-600 dark:text-gray-400 text-sm flex-grow mb-4">
+                    {tag.data.description}
+                  </p>
+                )}
+
+                <div class="mt-auto flex items-center text-sm font-medium text-primary-600 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300">
+                  Browse tag
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="ml-1 h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </Link>
           );
         })
       }

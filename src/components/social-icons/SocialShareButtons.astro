@@ -1,11 +1,8 @@
 ---
-import { useTranslations } from "@/i18n";
 import FacebookShareButton from "./social-buttons/FacebookShareButton.astro";
 import LinkedInShareButton from "./social-buttons/LinkedInShareButton.astro";
 import RedditShareButton from "./social-buttons/RedditShareButton.astro";
 import TwitterShareButton from "./social-buttons/TwitterShareButton.astro";
-
-const t = useTranslations();
 
 type Props = {
   title: string;
@@ -22,7 +19,7 @@ const { title, description, via } = Astro.props;
   <LinkedInShareButton />
   <RedditShareButton {title} />
   <TwitterShareButton {description} {via} />
-  <span>{t("components.socialShareButtons.sharing")}</span>
+  <span>sharing is caring</span>
 </div>
 
 <style>

@@ -1,0 +1,29 @@
+---
+import { ITEMS_PER_PAGE } from "@/consts";
+import ListLayout from "@/layouts/ListLayout.astro";
+import { getCollection } from "astro:content";
+
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+
+export const prerender = true;
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
+  return paginate(posts, { pageSize: ITEMS_PER_PAGE });
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { page } = Astro.props;
+let titleTemplate = "";
+let robots;
+---
+
+<ListLayout
+  title={"Blog"}
+  description={"All blog posts"}
+  page={page}
+  {robots}
+  {titleTemplate}
+/>

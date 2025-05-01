@@ -1,0 +1,130 @@
+---
+import { Image } from "astro:assets";
+import { type CollectionEntry, getCollection } from "astro:content";
+
+import SocialIcon from "@/components/social-icons/index.astro";
+import Link from "../components/Link.astro";
+import { ITEMS_PER_PAGE } from "../consts";
+import RootLayout from "./Layout.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+
+interface Props {
+  content: CollectionEntry<"authors">["data"];
+  slug: string;
+}
+
+const {
+  name,
+  avatar,
+  occupation,
+  company,
+  email,
+  github,
+  linkedin,
+  twitter,
+  shortBio,
+} = Astro.props.content;
+
+const authorPosts = await getCollection(
+  "blog",
+  ({ data: { authors, draft } }) => {
+    return !draft && authors.some((author) => author.id === Astro.props.slug);
+  }
+)
+  .then((blogs) =>
+    blogs.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  )
+  .then((posts) => {
+    return posts.slice(0, ITEMS_PER_PAGE).map((post) => {
+      return { title: post.data.title, slug: post.id, date: post.data.date };
+    });
+  });
+---
+
+<RootLayout title={name} description={shortBio}>
+  <div class="w-full max-w-6xl px-4 mx-auto sm:px-6">
+    <div class="py-12">
+      <div class="text-center mb-12">
+        {
+          avatar && (
+            <Image
+              src={avatar}
+              alt="avatar"
+              width={192}
+              height={192}
+              class="h-48 w-48 mx-auto rounded-full"
+            />
+          )
+        }
+        <h1 class="mt-6 text-4xl font-bold text-gray-900 dark:text-gray-100">
+          {name}
+        </h1>
+        <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
+          {occupation}
+        </p>
+        <div class="flex justify-center space-x-5 mt-6">
+          {email && <SocialIcon kind="mail" href={`mailto:${email}`} />}
+          {github && <SocialIcon kind="github" href={github} />}
+          {linkedin && <SocialIcon kind="linkedin" href={linkedin} />}
+          {twitter && <SocialIcon kind="twitter" href={twitter} />}
+        </div>
+      </div>
+
+      <div class="max-w-3xl mx-auto">
+        <div class="prose prose-lg dark:prose-invert mx-auto">
+          <slot />
+        </div>
+
+        {
+          authorPosts.length > 0 && (
+            <div class="mt-16">
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                Recent Articles
+              </h2>
+              <ul class="space-y-4">
+                {authorPosts.map(({ slug, title, date }) => (
+                  <li class="group">
+                    <div class="flex flex-col">
+                      <Link
+                        transition:name={title}
+                        href={`/blog/${slug}`}
+                        class="text-lg text-gray-800 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                      >
+                        {title}
+                      </Link>
+                      <span class="text-sm text-gray-500 dark:text-gray-400">
+                        <FormattedDate date={date} />
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <div class="mt-8">
+                <Link
+                  href="/blog"
+                  class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300"
+                >
+                  View all posts
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="ml-1 h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</RootLayout>

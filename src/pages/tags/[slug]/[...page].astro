@@ -2,11 +2,10 @@
 import { getCollection, type CollectionEntry, render } from "astro:content";
 
 import { ITEMS_PER_PAGE } from "@/consts";
-import { excludeDrafts, sortBlogPosts } from "@/functions";
-import ListWithTagsLayout from "@/layouts/ListWithTagsLayout.astro";
+import ListWithTagsLayout from "@/layouts/ListLayout.astro";
 import type { Page } from "astro";
-import { useTranslations } from "@/i18n";
-const t = useTranslations();
+import Link from "@/components/Link.astro";
+
 interface Props {
   page: Page<CollectionEntry<"blog">>;
   entry: CollectionEntry<"tags">;
@@ -15,7 +14,9 @@ interface Props {
 export const prerender = true;
 export async function getStaticPaths({ paginate }: any) {
   const tags = await getCollection("tags");
-  const posts = await getCollection("blog", excludeDrafts).then(sortBlogPosts);
+  const posts = await getCollection("blog").then((blogs) =>
+    blogs.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  );
 
   return tags.flatMap((entry) => {
     const tagPosts = posts.filter((post) =>
@@ -37,7 +38,7 @@ let robots;
 let titleTemplate = "";
 if (page?.currentPage > 1) {
   robots = "noindex, follow";
-  titleTemplate = t("seo.pagination.page", { page: `${page?.currentPage}` }); 
+  titleTemplate = `Page ${page?.currentPage}`;
 }
 ---
 
@@ -48,5 +49,26 @@ if (page?.currentPage > 1) {
   {robots}
   {titleTemplate}
 >
+  <div class="mb-4 -ml-3">
+    <Link
+      href="/tags"
+      class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400 flex items-center gap-1"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>
+      Back to all tags
+    </Link>
+  </div>
   <Content />
 </ListWithTagsLayout>

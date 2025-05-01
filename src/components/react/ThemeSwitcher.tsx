@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import { SITE_METADATA } from "@/consts";
-import { useTranslations } from "@/i18n";
-
-const t = useTranslations();
 
 export default function ThemeSwitcher() {
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -34,10 +31,7 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <button
-      aria-label={t("components.themeSwitcher.toggleDarkMode")}
-      onClick={toggleTheme}
-    >
+    <button onClick={toggleTheme}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"

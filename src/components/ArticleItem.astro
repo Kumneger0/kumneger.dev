@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = CollectionEntry<"blog">;
+
+const article = Astro.props;
+
+const link = `/blog/${article.id}`;
+const title = article.data.title;
+---
+
+<a
+  href={link}
+  class="block hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md p-2 -mx-2 transition-colors duration-300"
+>
+  <p transition:name={title} class="text-gray-800 dark:text-gray-200">
+    {title}
+  </p>
+</a>

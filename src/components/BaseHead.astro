@@ -1,18 +1,17 @@
 ---
-import "@/styles/global.css";
+import Favicon from "@/assets/favicon.svg";
 import { SITE_METADATA } from "@/consts";
-import { ViewTransitions } from "astro:transitions";
+import "../styles/global.css";
 import "@fontsource/onest";
 import { SEO } from "astro-seo";
-import { getEntry, type CollectionEntry } from "astro:content";
-import Favicon from "@/assets/favicon.svg";
 import { getImage } from "astro:assets";
-import SpeedInsights from "@vercel/speed-insights/astro";
+import { getEntry, type CollectionEntry } from "astro:content";
+import { ClientRouter } from "astro:transitions";
 interface Props {
   title: string;
   description: string;
   ogImage?: string;
-  robots?: string; // default to SITE_METADATA.robots
+  robots?: string;
   titleTemplate?: string;
   article?: {
     publishedTime: Date;
@@ -32,16 +31,13 @@ const {
   titleTemplate,
 } = Astro.props;
 
-// The default author is the site creator
 const creator = await getEntry("authors", "default");
 
-// Optimize favicon and touch icons
 const favicon = await getImage({ src: Favicon, width: 16, height: 16 });
 const appleTouchIcon = await getImage({ src: Favicon, width: 76, height: 76 });
 const favicon32 = await getImage({ src: Favicon, width: 32, height: 32 });
 const favicon16 = await getImage({ src: Favicon, width: 16, height: 16 });
 
-// Optimize open graph image
 let openGraphImage;
 if (article?.cover) {
   openGraphImage = await getImage({
@@ -105,7 +101,6 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
     twitter={{
       ...((twitterCreator && {
         card: "summary_large_image",
-        // site: creator.data.twitter,
         creator: twitterCreator.replace("https://twitter.com/", "@"),
         title,
         description,
@@ -142,7 +137,7 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
       }),
     }}
   />
-  <ViewTransitions />
+  <ClientRouter />
   <meta
     name="google-site-verification"
     content="oDVfNqx1QrRnGvkWz-i646WtX-rsZn1h2J7jdBwyHvU"

@@ -1,0 +1,279 @@
+  ---
+import { POST_METADATA, SITE_METADATA } from "@/consts";
+import ScrollTopAndComments from "@/react/ScrollTopAndComments";
+import { type CollectionEntry, getEntries, render } from "astro:content";
+import AttachCopyAndProgressBar from "../components/AttachCopyAndProgressBar.astro";
+import DetailsSummary from "../components/DetailsSummary.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Link from "../components/Link.astro";
+import PageTitle from "../components/PageTitle.astro";
+import PostCover from "../components/PostCover.astro";
+import SectionContainer from "../components/SectionContainer.astro";
+import SocialShareButtons from "../components/social-icons/SocialShareButtons.astro";
+import RootLayout from "./Layout.astro";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  next?: CollectionEntry<"blog">;
+  prev?: CollectionEntry<"blog">;
+}
+
+const { post, next, prev } = Astro.props as Props;
+const authors: CollectionEntry<"authors">[] = await getEntries(
+  post.data.authors
+);
+const tags: CollectionEntry<"tags">[] = await getEntries(post.data.tags);
+
+const articleOgDetails = {
+  publishedTime: post.data.date,
+  modifiedTime: post.data.lastmod,
+  authors: authors.map(({ data }) => data.name),
+  authorTwitter: authors.map(({ data }) => data.twitter).at(0),
+  tags: tags.map(({ data }) => data.name),
+  cover: post.data.cover,
+};
+
+const { Content, headings } = await render(post);
+
+const postURL = import.meta.env.PROD
+  ? `${SITE_METADATA.siteUrl}/${post.data.title}`
+  : `https://localhost:4000/${post.data.title}`;
+---
+
+<RootLayout
+  title={post.data.title}
+  description={post.data.summary}
+  article={articleOgDetails}
+>
+  <SectionContainer>
+    <ScrollTopAndComments client:only="solid-js" />
+    <article>
+      <header>
+        <div class="space-y-1 pb-10 text-center dark:border-gray-700">
+          <dl>
+            <dt class="sr-only">Published at</dt>
+            <dd
+              class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400"
+            >
+              <FormattedDate date={post.data.date} />
+            </dd>
+          </dl>
+          <PageTitle transition:name={post.data.title}
+            >{post.data.title}</PageTitle
+          >
+        </div>
+        {
+          post.data.cover && POST_METADATA.showCover && (
+            <div class="space-y-1 pb-10 text-center dark:border-gray-700">
+              <PostCover {post} />
+            </div>
+          )
+        }
+        {
+          POST_METADATA.showSummary && (
+            <div class="pb-10 text-center border-b border-gray-200">
+              <p>{post.data.summary}</p>
+            </div>
+          )
+        }
+      </header>
+
+      {
+        post.data.draft && (
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 dark:bg-yellow-500 dark:border-yellow-300 mt-10">
+            <p class="leading-5 text-yellow-700 dark:text-yellow-300">
+              This is a draft. It might be incomplete or have errors.
+            </p>
+          </div>
+        )
+      }
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mt-7">
+        {
+          headings.length > 0 && POST_METADATA.showTableOfContents && (
+            <div class="lg:col-span-1">
+              <div class="sticky top-24">
+                <DetailsSummary
+                  class="border border-gray-100 dark:border-gray-600 rounded mt-4 max-w-none"
+                  title={"Table of Contents"}
+                >
+                  <ul class="space-y-2 text-sm" id="toc-container">
+                    {headings.map(({ slug, text, depth }) => (
+                      <li
+                        class:list={{
+                          "ml-0": depth === 2,
+                          "ml-4": depth === 3,
+                          "ml-8": depth === 4,
+                          "ml-12": depth === 5,
+                          "ml-16": depth === 6,
+                        }}
+                      >
+                        <Link
+                          href={`#${slug}`}
+                          class="toc-item text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 no-underline transition-colors duration-200"
+                          data-heading-id={slug}
+                        >
+                          {text}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </DetailsSummary>
+              </div>
+            </div>
+          )
+        }
+
+        <div
+          class={`${headings.length > 0 && POST_METADATA.showTableOfContents ? "lg:col-span-3" : "lg:col-span-4"}`}
+        >
+          <div class="prose max-w-none pb-8 dark:prose-invert">
+            <slot />
+            <Content />
+          </div>
+
+          {
+            ["bottom", "both"].includes(POST_METADATA.showShareButtons) ? (
+              <SocialShareButtons
+                title={post.data.title}
+                description={post.data.summary}
+              />
+            ) : null
+          }
+
+          <script src="https://giscus.app/client.js"
+        data-repo="Kumneger0/kumneger.dev"
+        data-repo-id="R_kgDOMDEaXQ"
+        data-category="Ideas"
+        data-category-id="DIC_kwDOMDEaXc4CmR_P"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="1"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+
+          <footer
+            class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"
+          >
+            <div
+              class="flex flex-col text-sm font-medium sm:flex-row sm:justify-between sm:text-base"
+            >
+              {
+                prev && (
+                  <div class="pt-4 xl:pt-8">
+                    <Link
+                      href={`/${prev.id}`}
+                      class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                      aria-label={`Previous post: ${prev.data.title}`}
+                    >
+                      &larr; {prev.data.title}
+                    </Link>
+                  </div>
+                )
+              }
+              {
+                next && (
+                  <div class="pt-4 xl:pt-8">
+                    <Link
+                      href={`/${next.id}`}
+                      class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                      aria-label={`Next post: ${next.data.title}`}
+                    >
+                      {next.data.title} &rarr;
+                    </Link>
+                  </div>
+                )
+              }
+            </div>
+          </footer>
+        </div>
+      </div>
+    </article>
+  </SectionContainer>
+</RootLayout>
+<AttachCopyAndProgressBar />
+
+<style>
+  .toc-active {
+    font-weight: bold;
+    color: var(--color-primary-600);
+  }
+
+  :global(.dark) .toc-active {
+    color: var(--color-primary-400);
+  }
+</style>
+
+<script>
+  function setupTOCHighlighting() {
+    const headings = Array.from(
+      document.querySelectorAll("h1, h2, h3, h4, h5, h6")
+    );
+
+    console.log("headings", headings);
+
+    const tocItems = Array.from(document.querySelectorAll(".toc-item"));
+
+    console.log("tockItems", tocItems);
+
+    if (headings.length === 0 || tocItems.length === 0) return;
+
+    // Create a map of heading IDs to their TOC items
+    const idToTOCItem = new Map();
+    tocItems.forEach((item) => {
+      const id = item.getAttribute("data-heading-id");
+      if (id) {
+        idToTOCItem.set(id, item);
+      }
+    });
+
+    const observerOptions = {
+      rootMargin: "-100px 0px -66%",
+      threshold: 0,
+    };
+
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      const visibleHeadings = entries
+        .filter((entry) => entry.isIntersecting)
+        .map((entry) => entry.target);
+
+      if (visibleHeadings.length === 0) return;
+
+      tocItems.forEach((item) => {
+        item.classList.remove("toc-active");
+      });
+
+      const activeHeading = visibleHeadings[0];
+      const activeId = activeHeading.id;
+      const activeTOCItem = idToTOCItem.get(activeId);
+
+      if (activeTOCItem) {
+        activeTOCItem.classList.add("toc-active");
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
+
+    headings.forEach((heading) => {
+      observer.observe(heading);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }
+
+  document.addEventListener("DOMContentLoaded", setupTOCHighlighting);
+
+  document.addEventListener("astro:page-load", setupTOCHighlighting);
+</script>
+

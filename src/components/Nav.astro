@@ -1,0 +1,22 @@
+---
+import ThemeSwitcher from "@/components/react/ThemeSwitcher";
+---
+
+<nav class="mb-6">
+  <ul class="flex space-x-6 justify-center">
+    <li>
+      <a href="/" class="text-gray-400 hover:text-white transition-colors"
+        >Home</a
+      >
+    </li>
+
+    <li>
+      <a href="/blog" class="text-gray-400 hover:text-white transition-colors"
+        >Blog</a
+      >
+    </li>
+    <li>
+      <ThemeSwitcher client:only />
+    </li>
+  </ul>
+</nav>

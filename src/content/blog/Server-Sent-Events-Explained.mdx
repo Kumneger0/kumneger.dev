@@ -91,7 +91,6 @@ app.get("/sse", async (c) => {
           event: "user-leave",
         }),
       );
-      
     });
 
     while (true) {
@@ -186,7 +185,7 @@ function handleSSEConnection() {
 
   eventSource.addEventListener("new-user", (event) => {
     const user = JSON.parse(event.data);
-    
+
     showUser(user);
     showUserJoinAndLeaveMessage(user, true);
   });
