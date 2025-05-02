@@ -12,6 +12,7 @@ export const SITE_METADATA = {
   twitter: "https://x.com/Kumneger0",
   linkedin: "https://www.linkedin.com/in/kumneger-wondimu-2b8405241/",
   github: "https://github.com/Kumneger0",
+  description: "A personal site of Kumneger Wondimu",
 };
 
 export const ITEMS_PER_PAGE = 5;
