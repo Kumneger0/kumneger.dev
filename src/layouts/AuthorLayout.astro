@@ -35,7 +35,7 @@ const authorPosts = await getCollection(
     blogs.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   )
   .then((posts) => {
-    return posts.slice(0, ITEMS_PER_PAGE).map((post) => {
+    return posts.slice(0, 3).map((post) => {
       return { title: post.data.title, slug: post.id, date: post.data.date };
     });
   });
