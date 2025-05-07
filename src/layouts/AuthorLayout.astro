@@ -43,9 +43,9 @@ const authorPosts = await getCollection(
 
 <RootLayout title={name} description={shortBio}>
   <div class="w-full max-w-6xl px-4 mx-auto sm:px-6">
-    <div class="py-12">
-      <div class="text-center mb-12">
-        {
+    <div class="py">
+      <div class="max-w-3xl mx-auto mb-5">
+        <!-- {
           avatar && (
             <Image
               src={avatar}
@@ -55,7 +55,7 @@ const authorPosts = await getCollection(
               class="h-48 w-48 mx-auto rounded-full"
             />
           )
-        }
+        } -->
         <h1 class="mt-6 text-4xl font-bold text-gray-900 dark:text-gray-100">
           {name}
         </h1>
