@@ -3,6 +3,8 @@ import Favicon from "@/assets/favicon.svg";
 import { SITE_METADATA } from "@/consts";
 import "../styles/global.css";
 import { SEO } from "astro-seo";
+import "@fontsource/onest/400.css";
+import "@fontsource/onest/700.css";
 import { getImage } from "astro:assets";
 import { getEntry, type CollectionEntry } from "astro:content";
 import { ClientRouter } from "astro:transitions";
@@ -97,14 +99,14 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
         },
         {
           rel: "preload",
-          href: "/fonts/onest-latin-400-normal.woff2",
+          href: "/node_modules/.pnpm/@fontsource+onest@5.2.7/node_modules/@fontsource/onest/files/onest-latin-400-normal.woff2",
           as: "font",
           type: "font/woff2",
           crossorigin: "anonymous",
         },
         {
           rel: "preload",
-          href: "/fonts/onest-latin-700-normal.woff2",
+          href: "/node_modules/.pnpm/@fontsource+onest@5.2.7/node_modules/@fontsource/onest/files/onest-latin-700-normal.woff2",
           as: "font",
           type: "font/woff2",
           crossorigin: "anonymous",
