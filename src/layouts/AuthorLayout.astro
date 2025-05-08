@@ -43,17 +43,19 @@ const authorPosts = await getCollection(
 
 <RootLayout title={name} description={shortBio}>
   <div class="w-full max-w-6xl px-4 mx-auto sm:px-6">
-    <div class="py">
+    <div class="py-8">
       <div class="max-w-3xl mx-auto mb-5">
         <!-- {
           avatar && (
-            <Image
-              src={avatar}
-              alt="avatar"
-              width={192}
-              height={192}
-              class="h-48 w-48 mx-auto rounded-full"
-            />
+            <div class="h-48 w-48 mx-auto">
+              <Image
+                src={avatar}
+                alt="avatar"
+                width={192}
+                height={192}
+                class="h-full w-full rounded-full object-cover"
+              />
+            </div>
           )
         } -->
         <h1 class="mt-6 text-4xl font-bold text-gray-900 dark:text-gray-100">
@@ -71,7 +73,7 @@ const authorPosts = await getCollection(
       </div>
 
       <div class="max-w-3xl mx-auto">
-        <div class="prose prose-lg dark:prose-invert mx-auto">
+        <div class="prose-lg dark:prose-invert mx-auto">
           <slot />
         </div>
 
@@ -83,7 +85,7 @@ const authorPosts = await getCollection(
               </h2>
               <ul class="space-y-4">
                 {authorPosts.map(({ slug, title, date }) => (
-                  <li class="group">
+                  <li class="group min-h-[4rem]">
                     <div class="flex flex-col">
                       <Link
                         transition:name={title}
