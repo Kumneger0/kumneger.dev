@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @config "../../tailwind.config.cjs";
+
+* {
+    font-display: swap;
+    font-family: Arial, Helvetica, sans-serif;
+}
