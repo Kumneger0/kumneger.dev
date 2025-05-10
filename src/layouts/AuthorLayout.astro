@@ -43,21 +43,8 @@ const authorPosts = await getCollection(
 
 <RootLayout title={name} description={shortBio}>
   <div class="w-full max-w-6xl px-4 mx-auto sm:px-6">
-    <div class="py-8">
-      <div class="max-w-3xl mx-auto mb-5">
-        <!-- {
-          avatar && (
-            <div class="h-48 w-48 mx-auto">
-              <Image
-                src={avatar}
-                alt="avatar"
-                width={192}
-                height={192}
-                class="h-full w-full rounded-full object-cover"
-              />
-            </div>
-          )
-        } -->
+    <div class="py-8 max-w-3xl mx-auto">
+      <div class="max-w-2xl mx-auto">
         <h1 class="mt-6 text-4xl font-bold text-gray-900 dark:text-gray-100">
           {name}
         </h1>
@@ -72,60 +59,62 @@ const authorPosts = await getCollection(
         </div>
       </div>
 
-      <div class="max-w-3xl mx-auto">
-        <div class="prose-lg dark:prose-invert mx-auto">
+      <div class="mx-auto">
+        <div class="prose-lg prose dark:prose-invert mx-auto">
           <slot />
         </div>
 
-        {
-          authorPosts.length > 0 && (
-            <div class="mt-16">
-              <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-                Recent Articles
-              </h2>
-              <ul class="space-y-4">
-                {authorPosts.map(({ slug, title, date }) => (
-                  <li class="group min-h-[4rem]">
-                    <div class="flex flex-col">
-                      <Link
-                        transition:name={title}
-                        href={`/blog/${slug}`}
-                        class="text-lg text-gray-800 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
-                      >
-                        {title}
-                      </Link>
-                      <span class="text-sm text-gray-500 dark:text-gray-400">
-                        <FormattedDate date={date} />
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <div class="mt-8">
-                <Link
-                  href="/blog"
-                  class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300"
-                >
-                  View all posts
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="ml-1 h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+        <div class="max-w-2xl mx-auto">
+          {
+            authorPosts.length > 0 && (
+              <div class="mt-16">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                  Recent Articles
+                </h2>
+                <ul class="space-y-4">
+                  {authorPosts.map(({ slug, title, date }) => (
+                    <li class="group min-h-[4rem]">
+                      <div class="flex flex-col">
+                        <Link
+                          transition:name={title}
+                          href={`/blog/${slug}`}
+                          class="text-lg text-gray-800 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                        >
+                          {title}
+                        </Link>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                          <FormattedDate date={date} />
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <div class="mt-8">
+                  <Link
+                    href="/blog"
+                    class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    />
-                  </svg>
-                </Link>
+                    View all posts
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="ml-1 h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </Link>
+                </div>
               </div>
-            </div>
-          )
-        }
+            )
+          }
+        </div>
       </div>
     </div>
   </div>

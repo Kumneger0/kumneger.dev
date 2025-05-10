@@ -7,7 +7,11 @@ import "@fontsource/onest/400.css";
 import "@fontsource/onest/700.css";
 import { getImage } from "astro:assets";
 import { getEntry, type CollectionEntry } from "astro:content";
+import { join } from "path";
 import { ClientRouter } from "astro:transitions";
+
+import { AstroFont } from "astro-font";
+
 interface Props {
   title: string;
   description: string;
@@ -61,6 +65,34 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
 ---
 
 <head>
+  <!-- <AstroFont
+    config={[
+      {
+        name: "atkinson",
+        src: [
+          {
+            style: "normal",
+            weight: "400",
+            path: join(
+              process.cwd(),
+              "public",
+              "fonts",
+              "atkinson-regular.woff"
+            ),
+          },
+          {
+            style: "medium",
+            weight: "500",
+            path: join(process.cwd(), "public", "fonts", "atkinson-bold.woff"),
+          },
+        ],
+        preload: false,
+        display: "swap",
+        selector: "body",
+        fallback: "sans-serif",
+      },
+    ]}
+  /> -->
   <SEO
     title={title}
     {titleTemplate}
