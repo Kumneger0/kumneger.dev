@@ -3,8 +3,6 @@ import Favicon from "@/assets/favicon.svg";
 import { SITE_METADATA } from "@/consts";
 import "../styles/global.css";
 import { SEO } from "astro-seo";
-import "@fontsource/onest/400.css";
-import "@fontsource/onest/700.css";
 import { getImage } from "astro:assets";
 import { getEntry, type CollectionEntry } from "astro:content";
 import { join } from "path";
@@ -65,7 +63,7 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
 ---
 
 <head>
-  <!-- <AstroFont
+  <AstroFont
     config={[
       {
         name: "atkinson",
@@ -86,13 +84,13 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
             path: join(process.cwd(), "public", "fonts", "atkinson-bold.woff"),
           },
         ],
-        preload: false,
+        preload: true,
         display: "swap",
         selector: "body",
-        fallback: "sans-serif",
+        fallback: "monospace",
       },
     ]}
-  /> -->
+  />
   <SEO
     title={title}
     {titleTemplate}
