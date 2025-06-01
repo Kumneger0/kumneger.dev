@@ -9,8 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.2.6",
-    "@astrojs/react": "^4.2.7",
+    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/react": "^4.3.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.4.0",
     "@astrojs/vercel": "^8.1.4",
@@ -18,7 +18,7 @@
     "@tailwindcss/vite": "^4.1.4",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
-    "astro": "^5.7.13",
+    "astro": "^5.8.1",
     "astro-font": "^1.1.0",
     "astro-meta-tags": "^0.3.1",
     "astro-robots-txt": "^1.0.0",
