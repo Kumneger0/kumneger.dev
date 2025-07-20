@@ -1,0 +1,242 @@
+---
+title: Cligram v2:Bridging Go and JavaScript in a Terminal UI Application
+date: "2025-07-20"
+summary: "I swapped out Cligram's React-based terminal UI for a new one in Go, but kept the original JavaScript backend. This post breaks down how I connected the two languages using JSON-RPC over stdio."
+tags: ["cligram", "go", "javascript", "react"]
+cover: "@/assets/go-js-bridge.png"
+---
+import DynamicSvg from "@/components/react/DynamicSvg.tsx";
+
+Hey folks, it's been a while since I wrote a blog post. I was busy with work and personal stuff.
+Recently, I released v2 of [Cligram](https://github.com/Kumneger0/cligram). Today, I want to show what I have learned by building this project. This is a kind of walk-through like how the project works and stuff. You can take a look at the full project on [GitHub](https://github.com/kumneger0/cligram). 
+V2 doesn't have new features, but I migrated the ui([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)) part to GoLang
+Previously, I built with React. There is an amazing npm package called [ink](https://www.npmjs.com/package/ink), which is a React renderer just like react-dom for the web, react-native for mobile,
+Ink is also a React renderer, but it is for building [tui](https://en.wikipedia.org/wiki/Text-based_user_interface)
+It is used by
+
+- [Codex](https://github.com/openai/codex) - An agentic coding tool, made by OpenAI
+- [Claude Code](https://github.com/anthropics/claude-code) - An agentic coding tool, made by Anthropic.
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli) - An agentic coding tool, made by Google
+- And many more, check out the list of [projects and companies](https://github.com/vadimdemedes/ink/blob/master/readme.md#whos-using-ink) to see who is using Ink
+
+Alright, enough about ink, you will read more about it [here](https://github.com/vadimdemedes/ink/blob/master/readme.md)
+
+## OK, what's wrong with ink?
+
+Nothing! It is great, it's awesome, but it wasn't a perfect fit for my use case.
+
+The other day, I was experimenting with [bubbletea](https://github.com/charmbracelet/bubbletea) for a tiny [project](https://github.com/Kumneger0/cheztui). It makes building interactive tui breeze. At that time, I was thinking,
+> "Should I rewrite cligram in Go?” No I don't wanna rewrite the entire project in Go. Instead, let's rewrite only the ui part in Go while keeping the underlying communication with Telegram servers in JavaScript.ok then how can i achive the communication between JavaScript and GoLang ?	
+
+At first, I was thinking of using WebSockets, but it feels like WebSockets is overkill, so I decided to go with [JSON-RPC](https://www.jsonrpc.org/) over stdio.
+
+## How does Cligram work?
+
+### **Overview**
+
+As I said, the project consists of a JavaScript Backend and a Go client.
+
+<DynamicSvg src="/cligram-sequence-diagram.svg" client:load />
+
+### **Go Client**
+
+The Go client is responsible for the interaction with the JavaScript backend
+
+The JavaScript single executable is embedded using [Go's embed directive](https://pkg.go.dev/embed), which is handy to embed static assets into your binary
+
+```go
+func GetJSExcutable() (*string, error) {
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		return nil, fmt.Errorf("could not get user cache directory: %w", err)
+	}
+
+	appDir := filepath.Join(cacheDir, "cligram")
+	if err := os.MkdirAll(appDir, 0755); err != nil {
+		return nil, fmt.Errorf("could not create app cache directory: %w", err)
+	}
+   
+	backendPath := filepath.Join(appDir, "cligram-js-backend") // js backend file path
+
+	// hash the embedded binary
+	embeddedHash := sha256.Sum256(assets.JSBackendBinary)
+	embeddedHashStr := hex.EncodeToString(embeddedHash[:])
+
+	// open the file on disk
+	fileOnDisk, err := os.Open(backendPath)
+	if err == nil {
+
+		hasher := sha256.New()
+		if _, err := io.Copy(hasher, fileOnDisk); err == nil {
+			// get the hash of the file on disk
+			diskHashStr := hex.EncodeToString(hasher.Sum(nil))
+			// compare the hash with the one we created earlier
+			if diskHashStr == embeddedHashStr {	
+				fileOnDisk.Close()
+				return &backendPath, nil
+			}
+		}
+		fileOnDisk.Close()
+	}
+
+	_ = os.Remove(backendPath); // remove the file from the cache if it exists and write the new one
+	if err := os.WriteFile(backendPath, assets.JSBackendBinary, 0755); err != nil {
+		slog.Error("error writing file", "error", err.Error())
+		return nil, fmt.Errorf("could not write embedded backend binary: %w", err)
+	}
+
+	return &backendPath, nil
+}
+
+```
+
+When you run the app, I create a new SHA256 hash for the embedded JavaScript single executable.
+Then look for the executable in the user's cache dir. If we can't find the executable in the cache, we go ahead and just write to the cache dir.
+If we found the executable in the cache dir, which means the err will become nil.
+We can create a new hash using the same algorithm, but with the file we found in the cache dir.
+We then compare the hash with the one we created earlier. If they match, we return the executable path. If not, we remove the file from the cache and write a new one. We are using the hash to compare whether the binary in the user's cache dir is the latest or not. If we don't do this, the single executable will never get updated. That's very bad, right?
+
+After getting the executable's path, we run it in a goroutine; this way, it won't block the main thread.
+
+```go
+   jsExcutable, err := runner.GetJSExcutable()
+   cmd := exec.Command(*jsExcutable)
+   stdin, err := cmd.StdinPipe(); // get the stdin pipe
+   if err != nil {
+      //ignore this
+    }
+   stdout, err := cmd.StdoutPipe(); // get the stdout pipe
+   if err != nil {
+    //ignore this one also
+  }
+
+```
+
+Then we need to get the commands `stdin` and `stdout` b/c we need to write and read from a child process
+
+After finishing this, the client will make a new JSON-RPC request to get your chat history from JavaScript
+Here is an example JSON-RPC request
+
+```
+Content-Length: 71\r\n\r\n{"jsonrpc":"2.0","id":1,"method":"getUserChats","params":["user"]}
+
+```
+
+By writing this to the stdin of the child process, we are executing a JavaScript function called getUserChats. It is cool, right?
+
+### JavaScript Backend
+
+Here is how the JS implementation looks:
+
+```tsx
+  async function readHeaders(reader: typeof stdin): Promise<{ [key: string]: string }> {
+	const headers: { [key: string]: string } = {};
+	let lineBuffer = '';
+
+
+	while (true) { 
+		// read one character at a time
+		const chunk = reader.read(1);
+		if (chunk === null) {
+			await new Promise((resolve) => reader.once('readable', resolve)); // wait for the reader to be readable
+			continue;
+		}
+		const char = chunk.toString('utf8'); // convert the chunk to a string
+		lineBuffer += char; // add the character to the line buffer
+
+		if (lineBuffer.endsWith('\r\n') || lineBuffer.endsWith('\n')) {
+			let line: string; 
+			if (lineBuffer.endsWith('\r\n')) {
+				line = lineBuffer.slice(0, -2); // remove the '\r\n' from the line buffer
+			} else {
+				line = lineBuffer.slice(0, -1);
+			}
+			// if the line is empty, we break the loop
+			if (line === '') {
+				break;
+			}
+			// split the line by ':' eg Content-Length: 69 => ['Content-Length', '69']
+			const parts = line.split(':');
+			if (parts.length >= 2) {
+				// we only have one header, so that's why we are using 0 and 1
+				const headerName = parts[0]!.trim();
+				const headerValue = parts[1]!.trim();
+				headers[headerName] = headerValue;
+			}
+			lineBuffer = '';
+		}
+	}
+	return headers;
+}
+
+  async function readMessage(): Promise<IncomingMessage> {
+	const headers = await readHeaders(stdin);
+	const contentLengthHeader = Object.keys(headers).find(
+		(h) => h.toLowerCase() === 'content-length'
+	);
+
+	if (!contentLengthHeader) {
+		stderr.write('Error: Missing Content-Length header\n' + stringify(headers) + '\n');
+		throw new Error('Missing Content-Length header');
+	}
+	const length = parseInt(headers[contentLengthHeader!]!, 10);
+	if (isNaN(length) || length <= 0) {
+		stderr.write('Error: Invalid Content-Length header: ' + headers[contentLengthHeader] + '\n');
+		throw new Error('Invalid Content-Length header');
+	}
+    
+	// create a buffer with the exact size
+	let payloadBuffer = Buffer.alloc(length);
+	let bytesRead = 0;
+	while (bytesRead < length) {
+		const chunk = stdin.read(length - bytesRead); // read the chunk
+		if (chunk === null) {
+			await new Promise((resolve) => stdin.once('readable', resolve)); // wait for the reader to be readable
+			continue;
+		}
+		chunk.copy(payloadBuffer, bytesRead); // copy the chunk to the payload buffer
+		bytesRead += chunk.length; // add the length of the chunk to the bytes read
+	}
+
+	const payload = payloadBuffer.toString('utf8', 0, length);
+
+	try {
+		return JSON.parse(payload) as IncomingMessage;
+	} catch (e) {
+		stderr.write('Error: Failed to parse JSON payload: ' + payload + '\n' + e + '\n');
+		throw new Error('Parse error');
+	}
+}
+
+```
+
+First, we read the header. If you notice, readHeaders function carefully, we are reading one character at a time, we continue reading until we find `'\r\n')` or `/n` This means we finished reading the header, and then we construct the object. The constructed header object will look like this.
+
+```tsx
+const headers = {
+ "Content-Length":69
+}
+
+```
+
+After constructing the header, we go ahead and read the rest of the content. The header is crucial b/c we are creating a buffer with the exact size, and we use it to determine whether we finished reading or not. Then we parse it as JSON.
+It'll have the following shape.
+
+```tsx
+ type JsonRPCRequest = {
+  	jsonrpc: '2.0';
+		id: number; 
+		method: string; // function name we are going to call
+		params: []; // parameters
+  }
+
+```
+
+Lastly, we go ahead and call the function and write the result in stdout, then we read the stdout in Golang. 
+
+## Conclusion
+
+
+I hope you enjoyed reading this blog post. This is just a small part of the project, but I think it's a good starting point to understand how the project works.
+If you want to see the full project, you can check it out on [GitHub](https://github.com/kumneger0/cligram).Let me know what you think about this post in the comments below.
+If you have any questions, feel free to ask me on [Twitter](https://x.com/kumneger0).
