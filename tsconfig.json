@@ -10,6 +10,11 @@
       "@layouts/*": ["./src/layouts/*"],
       "@public/*": ["./public/*"],
       "@/react/*": ["src/components/react/*"]
-    }
+    },
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ]
   }
 }
