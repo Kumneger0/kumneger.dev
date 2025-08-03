@@ -15,6 +15,7 @@ import inspectUrls from "@jsdevtools/rehype-url-inspector";
 export default defineConfig({
   prefetch: true,
   site: SITE_METADATA.siteUrl,
+
   integrations: [
     mdx({
       rehypePlugins: [

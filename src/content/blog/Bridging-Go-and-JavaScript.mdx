@@ -1,5 +1,5 @@
 ---
-title: "Cligram v2: Bridging Go and JavaScript in a Terminal UI Application"
+title: Cligram v2:Bridging Go and JavaScript in a Terminal UI Application
 date: "2025-07-20"
 summary: "I swapped out Cligram's React-based terminal UI for a new one in Go, but kept the original JavaScript backend. This post breaks down how I connected the two languages using JSON-RPC over stdio."
 tags: ["cligram", "go", "javascript", "react"]
@@ -8,27 +8,27 @@ cover: "@/assets/go-js-bridge.png"
 import DynamicSvg from "@/components/react/DynamicSvg.tsx";
 
 Hey folks, it's been a while since I wrote a blog post. I was busy with work and personal stuff.
-Recently, I released v2 of [Cligram](https://github.com/Kumneger0/cligram). Today, I want to show what I learned by building this project. This is a walk-through of how the project works. You can take a look at the full project on [GitHub](https://github.com/kumneger0/cligram).
-V2 doesn't have new features, but I migrated the UI ([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)) part to Go.
-Previously, I built it with React. There is an amazing npm package called [Ink](https://www.npmjs.com/package/ink), which is a React renderer just like React DOM for the web and React Native for mobile.
-Ink is also a React renderer, but it is for building TUIs ([text-based user interfaces](https://en.wikipedia.org/wiki/Text-based_user_interface)).
-It is used by:
+Recently, I released v2 of [Cligram](https://github.com/Kumneger0/cligram). Today, I want to show what I have learned by building this project. This is a kind of walk-through like how the project works and stuff. You can take a look at the full project on [GitHub](https://github.com/kumneger0/cligram). 
+V2 doesn't have new features, but I migrated the ui([TUI](https://en.wikipedia.org/wiki/Text-based_user_interface)) part to GoLang
+previously, I built it with React. There is an amazing npm package called [ink](https://www.npmjs.com/package/ink), which is a React renderer just like react-dom for the web, react-native for mobile,
+Ink is also a React renderer, but it is for building [tui](https://en.wikipedia.org/wiki/Text-based_user_interface)
+It is used by
 
 - [Codex](https://github.com/openai/codex) - An agentic coding tool, made by OpenAI
 - [Claude Code](https://github.com/anthropics/claude-code) - An agentic coding tool, made by Anthropic.
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) - An agentic coding tool, made by Google
-- And many more, check out the list of [projects and companies](https://github.com/vadimdemedes/ink/blob/master/readme.md#whos-using-ink) to see who is using Ink.
+- And many more, check out the list of [projects and companies](https://github.com/vadimdemedes/ink/blob/master/readme.md#whos-using-ink) to see who is using Ink
 
-Alright, enough about Ink, you can read more about it [here](https://github.com/vadimdemedes/ink/blob/master/readme.md).
+Alright, enough about ink, you will read more about it [here](https://github.com/vadimdemedes/ink/blob/master/readme.md)
 
-## OK, what's wrong with Ink?
+## OK, what's wrong with ink?
 
-Nothing! It's great, it's awesome, but it wasn't a perfect fit for my use case.
+Nothing! It is great, it's awesome, but it wasn't a perfect fit for my use case.
 
-The other day, I was experimenting with [Bubble Tea](https://github.com/charmbracelet/bubbletea) for a tiny [project](https://github.com/Kumneger0/cheztui). It makes building interactive TUIs a breeze. At that time, I was thinking:
-> "Should I rewrite Cligram in Go? No, I don't want to rewrite the entire project in Go. Instead, let's rewrite only the UI part in Go while keeping the underlying communication with Telegram servers in JavaScript. Ok, then how can I achieve communication between JavaScript and Go?"
+The other day, I was experimenting with [bubbletea](https://github.com/charmbracelet/bubbletea) for a tiny [project](https://github.com/Kumneger0/cheztui). It makes building interactive tui breeze. At that time, I was thinking,
+> "Should I rewrite cligram in Go?” No I don't wanna rewrite the entire project in Go. Instead, let's rewrite only the ui part in Go while keeping the underlying communication with Telegram servers in JavaScript.ok then how can i achive the communication between JavaScript and GoLang ?	
 
-At first, I was thinking of using WebSockets, but that felt like overkill, so I decided to go with [JSON-RPC](https://www.jsonrpc.org/) over stdio.
+At first, I was thinking of using WebSockets, but it feels like WebSockets is overkill, so I decided to go with [JSON-RPC](https://www.jsonrpc.org/) over stdio.
 
 ## How does Cligram work?
 
@@ -90,7 +90,11 @@ func GetJSExcutable() (*string, error) {
 
 ```
 
-When you run the app, I create a new SHA256 hash for the embedded JavaScript executable. Then, I look for the executable in the user's cache directory. If it's not there, I write it. If it is there, I hash the cached file and compare it to the embedded one's hash. If they match, we're good to go. If not, I replace the cached file with the new one. This ensures the user always has the latest version of the backend executable. Without this check, it would never get updated, which would be pretty bad.
+When you run the app, I create a new SHA256 hash for the embedded JavaScript single executable.
+Then look for the executable in the user's cache dir. If we can't find the executable in the cache, we go ahead and just write to the cache dir.
+If we found the executable in the cache dir, which means the err will become nil.
+We can create a new hash using the same algorithm, but with the file we found in the cache dir.
+We then compare the hash with the one we created earlier. If they match, we return the executable path. If not, we remove the file from the cache and write a new one. We are using the hash to compare whether the binary in the user's cache dir is the latest or not. If we don't do this, the single executable will never get updated. That's very bad, right?
 
 After getting the executable's path, we run it in a goroutine; this way, it won't block the main thread.
 
@@ -108,21 +112,21 @@ After getting the executable's path, we run it in a goroutine; this way, it won'
 
 ```
 
-Then we need to get the command's `stdin` and `stdout` because we need to write to and read from the child process.
+Then we need to get the commands `stdin` and `stdout` b/c we need to write and read from a child process
 
-After this, the client makes a new JSON-RPC request to get your chat history from JavaScript.
-Here is an example JSON-RPC request:
+After finishing this, the client will make a new JSON-RPC request to get your chat history from JavaScript
+Here is an example JSON-RPC request
 
 ```
 Content-Length: 71\r\n\r\n{"jsonrpc":"2.0","id":1,"method":"getUserChats","params":["user"]}
 
 ```
 
-By writing this to the `stdin` of the child process, we are executing a JavaScript function called `getUserChats`. Cool, right?
+By writing this to the stdin of the child process, we are executing a JavaScript function called getUserChats. It is cool, right?
 
 ### JavaScript Backend
 
-Here is what the JavaScript implementation looks like:
+Here is how the JS implementation looks:
 
 ```tsx
   async function readHeaders(reader: typeof stdin): Promise<{ [key: string]: string }> {
@@ -206,16 +210,17 @@ Here is what the JavaScript implementation looks like:
 
 ```
 
-First, we read the header. If you look at the `readHeaders` function carefully, you'll see we're reading one character at a time. We keep reading until we find a `\r\n` or `\n`. This signals the end of the header, and we can construct the header object, which will look like this:
+First, we read the header. If you notice, readHeaders function carefully, we are reading one character at a time, we continue reading until we find `'\r\n')` or `/n` This means we finished reading the header, and then we construct the object. The constructed header object will look like this.
 
 ```tsx
 const headers = {
- "Content-Length": 69
+ "Content-Length":69
 }
+
 ```
 
-After constructing the header, we read the rest of the content. The header is crucial because we create a buffer with the exact size, and we use it to know when we've finished reading. Then we parse it as JSON.
-It'll have the following shape:
+After constructing the header, we go ahead and read the rest of the content. The header is crucial b/c we are creating a buffer with the exact size, and we use it to determine whether we finished reading or not. Then we parse it as JSON.
+It'll have the following shape.
 
 ```tsx
  type JsonRPCRequest = {
@@ -224,12 +229,14 @@ It'll have the following shape:
 		method: string; // function name we are going to call
 		params: []; // parameters
   }
+
 ```
 
-Lastly, we call the function, write the result to `stdout`, and then read the `stdout` in Go.
+Lastly, we go ahead and call the function and write the result in stdout, then we read the stdout in Golang. 
 
 ## Conclusion
 
-I hope you enjoyed reading this blog post. This is just a small part of the project, but I think it's a good starting point to understand how it works.
-If you want to see the full project, you can check it out on [GitHub](https://github.com/kumneger0/cligram). Let me know what you think about this post in the comments below.
+
+I hope you enjoyed reading this blog post. This is just a small part of the project, but I think it's a good starting point to understand how the project works.
+If you want to see the full project, you can check it out on [GitHub](https://github.com/kumneger0/cligram).Let me know what you think about this post in the comments below.
 If you have any questions, feel free to ask me on [Twitter](https://x.com/kumneger0).
