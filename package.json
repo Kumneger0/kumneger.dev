@@ -9,27 +9,27 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/mdx": "^4.3.3",
     "@astrojs/react": "^4.3.0",
-    "@astrojs/rss": "^4.0.11",
-    "@astrojs/sitemap": "^3.4.0",
-    "@astrojs/vercel": "^8.1.4",
-    "@fontsource/onest": "^5.2.7",
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.4.2",
+    "@astrojs/vercel": "^8.2.5",
+    "@fontsource/onest": "^5.2.9",
     "@jsdevtools/rehype-url-inspector": "^2.0.2",
-    "@tailwindcss/vite": "^4.1.4",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
-    "astro": "^5.8.1",
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "astro": "^5.12.8",
     "astro-font": "^1.1.0",
-    "astro-meta-tags": "^0.3.1",
+    "astro-meta-tags": "^0.3.2",
     "astro-robots-txt": "^1.0.0",
     "astro-seo": "^0.8.4",
     "markdown-it": "^14.1.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "sanitize-html": "^2.16.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sanitize-html": "^2.17.0",
     "sharp": "^0.34.3",
-    "tailwindcss": "^4.1.4"
+    "tailwindcss": "^4.1.11"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -41,6 +41,6 @@
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@types/markdown-it": "^14.1.2",
-    "@types/sanitize-html": "^2.15.0"
+    "@types/sanitize-html": "^2.16.0"
   }
 }
