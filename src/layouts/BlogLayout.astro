@@ -46,7 +46,7 @@ const postURL = import.meta.env.PROD
   article={articleOgDetails}
 >
   <SectionContainer>
-    <ScrollTopAndComments client:only="solid-js" />
+    <ScrollTopAndComments client:only="react" transition:persist />
     <article>
       <header>
         <div class="space-y-1 pb-10 text-center dark:border-gray-700">
