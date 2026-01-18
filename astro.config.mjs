@@ -10,11 +10,11 @@ import { SITE_METADATA } from "./src/consts.ts";
 import robotsTxt from "astro-robots-txt";
 import inspectUrls from "@jsdevtools/rehype-url-inspector";
 
-
 // https://astro.build/config
 export default defineConfig({
   prefetch: true,
   site: SITE_METADATA.siteUrl,
+
 
   integrations: [
     mdx({
@@ -49,6 +49,9 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      allowedHosts: ['4f606da3cbc1.ngrok-free.app']
+    }
   },
   output: "static",
   adapter: vercel({ 
