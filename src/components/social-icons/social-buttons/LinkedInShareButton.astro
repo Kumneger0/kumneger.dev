@@ -5,19 +5,10 @@ const URL = `https://www.linkedin.com/sharing/share-offsite/?url=${Astro.request
 ---
 
 <a
-  class="social-share-btn"
+  class="social-share-btn text-gray-500 dark:text-gray-400 hover:text-[#0a66c2] transition-colors"
   target="_blank"
   href={URL}
   rel="noopener noreferrer"
 >
   <LinkedinIcon />
 </a>
-
-<style>
-  a {
-    margin-right: 10px;
-  }
-  svg:hover {
-    fill: #0a66c2;
-  }
-</style>

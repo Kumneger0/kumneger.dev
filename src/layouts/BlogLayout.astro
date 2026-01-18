@@ -1,4 +1,4 @@
-  ---
+---
 import { POST_METADATA, SITE_METADATA } from "@/consts";
 import ScrollTopAndComments from "@/react/ScrollTopAndComments";
 import { type CollectionEntry, getEntries, render } from "astro:content";
@@ -35,9 +35,7 @@ const articleOgDetails = {
 
 const { Content, headings } = await render(post);
 
-const postURL = import.meta.env.PROD
-  ? `${SITE_METADATA.siteUrl}/${post.data.title}`
-  : `https://localhost:4000/${post.data.title}`;
+
 ---
 
 <RootLayout
@@ -46,7 +44,7 @@ const postURL = import.meta.env.PROD
   article={articleOgDetails}
 >
   <SectionContainer>
-    <ScrollTopAndComments client:only="react" transition:persist />
+    <ScrollTopAndComments client:only="react"  />
     <article>
       <header>
         <div class="space-y-1 pb-10 text-center dark:border-gray-700">

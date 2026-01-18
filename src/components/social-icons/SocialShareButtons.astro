@@ -14,12 +14,14 @@ type Props = {
 const { title, description, via } = Astro.props;
 ---
 
-<div class="flex gap-2" class:list={Astro.props.class}>
+<div class="flex items-center gap-4" class:list={Astro.props.class}>
   <FacebookShareButton />
   <LinkedInShareButton />
   <RedditShareButton {title} />
   <TwitterShareButton {description} {via} />
-  <span>sharing is caring</span>
+  <span class="ml-2 text-sm italic text-gray-400 dark:text-gray-500">
+    sharing is caring
+  </span>
 </div>
 
 <style>

@@ -4,22 +4,11 @@ import FacebookIcon from "../icons/Facebook.astro";
 const URL = `https://www.facebook.com/sharer/sharer.php?u=${Astro.request.url}`;
 ---
 
-<style>
-  a {
-    margin-right: 10px;
-  }
-</style>
 <a
-  class="social-share-btn"
+  class="social-share-btn text-gray-500 dark:text-gray-400 hover:text-[#1877f2] transition-colors"
   target="_blank"
   href={URL}
   rel="noopener noreferrer"
 >
   <FacebookIcon />
 </a>
-
-<style>
-  svg:hover {
-    fill: #1877f2;
-  }
-</style>

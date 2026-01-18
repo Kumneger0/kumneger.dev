@@ -10,7 +10,6 @@ import { SITE_METADATA } from "./src/consts.ts";
 import robotsTxt from "astro-robots-txt";
 import inspectUrls from "@jsdevtools/rehype-url-inspector";
 
-
 // https://astro.build/config
 export default defineConfig({
   prefetch: true,

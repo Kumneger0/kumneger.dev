@@ -1,0 +1,169 @@
+---
+title: Listen to Spotify in Your Terminal Without Premium Subscription 
+author: kumneger wondimu
+date: "2026-01-18"
+tags: ["go"]
+cover: "@/assets/clispot-banner.png"
+summary: I built an app that lets me listen to Spotify from my terminal
+---
+import DynamicSvg from "@/components/react/DynamicSvg.tsx";
+
+Hey, folks, recently, I made a project called [Clispot](https://github.com/kumneger0/clispot), and in this blog post, I’ll try to explain about it, like what it is, why I built it, and how it works. Clispot is a CLI app that lets you listen to Spotify songs right from your terminal. You can listen to your favorite playlist, tracks, and more.
+
+## Why
+
+I was so tired of using Spotify from GUI; it takes more than 1 GB of RAM, and I want something simpler and a lightweight option. So I tried searching for already built solutions, and I found [spotify-tui](https://github.com/Rigellute/spotify-tui) and [ncspot](https://github.com/hrkfdn/ncspot). When I saw them, I was happy and I said to myself, "Oh finally I don’t have to use Spotify from GUI anymore!" So I downloaded the app and tried to use it, but it didn’t work. I went back to the GitHub page to see if there was anything I was missing, and I found the issue: both of them **require you to have a Spotify Premium account.** I tried to investigate why both of them require a Spotify Premium account, and it turns out it is a limitation from the Spotify API. So I decided to build it for myself, something that works for a free account.
+
+
+## How does it work
+
+
+So, if the restriction is from Spotify itself, I need to find a workaround to achieve this. I then found a project called [spotDL](https://github.com/spotDL/spotify-downloader), which is a Spotify downloader. When you download a track using spotDL, it finds the matching song on YouTube using music metadata from Spotify
+
+When I knew this, I wanted to do the same, but instead of downloading the whole audio file before starting to play, I wanted to stream directly from YouTube. I did some experiments to see if I could do that. You know what, it did work, but we need to have three dependencies: [yt-dlp](https://github.com/yt-dlp/yt-dlp), [ffmpeg](https://www.ffmpeg.org/), and [oto](https://github.com/ebitengine/oto), which is a golang audio library that allows us to play the track. We need yt-dlp to stream the audio from YouTube, and we need ffmpeg for audio conversion. The audio library we are about to use for playing the track doesn’t support playing the audio that comes from YouTube, so we need to convert to [RAW PCM,](https://en.wikipedia.org/wiki/Raw_audio_format) which is supported by the audio library
+
+Here is a visual diagram of how this works
+
+<DynamicSvg src="/clispot-diagram.svg" client:load />
+
+First, request Spotify to get music metadata, like track name, artist name, album, etc, then search for that song on YouTube using yt-dlp. This code searches for the song, takes the first result, and streams directly to stdout 
+
+```go
+  searchQuery := "ytsearch:" + trackName + artistName
+
+  args := []string{
+		searchQuery,
+		"--no-playlist", 
+		"-f", "bestaudio",
+		"-o", "-", 
+	}
+
+	cmd := exec.Command("yt-dlp", args...)
+	
+		_ = cmd.Start()
+
+```
+
+We have managed to search and stream video, so what is next? Next up, what we're gonna do is read the child process’s stdout, that is, where the streams are saved, and convert it to [RAW PCM](https://www.notion.so/2e477f56be8680289b62c9cc698a58fd?pvs=21) on the fly
+
+```go
+ff := exec.Command("ffmpeg",
+		"-i", "pipe:0", 
+		"-f", "s16le", 
+		"-ac", "2",   
+		"-ar", "44100", 
+		"pipe:1", 
+	)
+
+ ff.Stdin = ytOut 
+
+	pr, pw := io.Pipe()
+	ff.Stdout = pw 
+
+	ctx, ready, _ := oto.NewContext(&oto.NewContextOptions{
+		SampleRate:   44100,
+		ChannelCount: 2,
+		Format:       oto.FormatSignedInt16LE,
+	})
+
+	<-ready 
+	player := ctx.NewPlayer(pr) 
+	player.Play()
+
+```
+
+The FFmpeg command looks scary at first. I didn’t know any of those flags before working on this either.
+
+The above code takes the output of yt-dlp and converts it to raw PCM, then we pipe the output of ffmpeg to oto using `io.Pipe` And then oto plays it on the fly
+
+Let’s put it all together
+
+```go
+package youtube
+
+import (
+	"io"
+	"os/exec"
+
+	"github.com/ebitengine/oto/v3"
+)
+
+func SpotifyYoutubeStreamer(artistName, trackName string) {
+	searchQuery := "ytsearch:" + trackName + artistName
+
+	args := []string{
+		searchQuery,
+		"--no-playlist",
+		"-f", "bestaudio",
+		"-o", "-",
+	}
+
+	cmd := exec.Command("yt-dlp", args...)
+
+	ytOut, _ := cmd.StdoutPipe()
+
+	_ = cmd.Start()
+
+	ff := exec.Command("ffmpeg",
+		"-i", "pipe:0",
+		"-f", "s16le",
+		"-ac", "2",
+		"-ar", "44100",
+		"pipe:1",
+	)
+
+	ff.Stdin = ytOut
+
+	pr, pw := io.Pipe()
+	ff.Stdout = pw
+
+	ctx, ready, _ := oto.NewContext(&oto.NewContextOptions{
+		SampleRate:   44100,
+		ChannelCount: 2,
+		Format:       oto.FormatSignedInt16LE,
+	})
+
+	<-ready // waiting for hardware audio devices to be ready you can read more about it on the oto docs
+	player := ctx.NewPlayer(pr)
+	player.Play()
+
+}
+
+```
+
+The [actual code](https://github.com/Kumneger0/clispot/blob/main/internal/youtube/youtube.go) on clispot may be a bit different. This simplified version for clarity
+
+That is how Clispot works
+
+
+## Headless mode
+
+
+We have a feature called headless mode, which provides an HTTP interface without the TUI, so anyone can build any other client application on top of Clispot, like web apps. That is how our [VSCode extension](https://marketplace.visualstudio.com/items?itemName=kumnegerwondimu.clispot) is built. This feature is specifically added for our [VSCode extension](https://marketplace.visualstudio.com/items?itemName=kumnegerwondimu.clispot)
+
+When you use our VS Code extension, it runs `clispot --headless`  behind the scenes for you
+
+In this mode, the audio playback is handled by clispot, not by the extension; the extension is  responsible for fetching your libraries, allowing you to manage your music queue, and allowing you to search for any music you want
+
+
+## Limitations
+
+
+Even though this setup works fine, it has some limitations. The first one is yt-dlp, which has [slow download speed](https://github.com/yt-dlp/yt-dlp/issues/14229), and a lot of yt-dlp users are experiencing this issue, and the second one, YouTube, sometimes says **`Sign in to confirm you’re not a bot`**
+
+In this kind of scenario, yt-dlp fails to download the audio. Luckily, yt-dlp provides an option to pass browser cookies so it can bypass this restriction. To do that in Clispot, you can use `clispot --cookies-from-browser <browser name>`
+
+```bash
+clispot --cookies-from-browser brave
+
+```
+
+If you run this, clispot will pass this flag directly to yt-dlp, so it’ll use the cookies from Brave
+
+Check out their [docs](https://github.com/yt-dlp/yt-dlp#:~:text=cookies%2Dfrom%2Dbrowser-,BROWSER%5B%2BKEYRING%5D%5B%3APROFILE%5D%5B%3A%3ACONTAINER%5D,-The%20name%20of) to see supported browsers
+
+
+## Conclusion
+
+
+I hope you enjoyed this article. The project is open source; you can see the source code in this [repository](https://github.com/Kumneger0/clispot). Let me know what you think about this post in the comments below. If you have any questions, feel free to ask me on [Twitter](https://x.com/kumneger0).
