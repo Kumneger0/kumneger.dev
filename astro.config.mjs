@@ -15,7 +15,6 @@ export default defineConfig({
   prefetch: true,
   site: SITE_METADATA.siteUrl,
 
-
   integrations: [
     mdx({
       rehypePlugins: [
@@ -49,9 +48,6 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
-    server: {
-      allowedHosts: ['4f606da3cbc1.ngrok-free.app']
-    }
   },
   output: "static",
   adapter: vercel({ 
