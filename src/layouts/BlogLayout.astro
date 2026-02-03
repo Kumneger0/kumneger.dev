@@ -7,6 +7,7 @@ import DetailsSummary from "../components/DetailsSummary.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Link from "../components/Link.astro";
 import PageTitle from "../components/PageTitle.astro";
+import HireMeCTA from "../components/HireMeCTA.astro";
 import PostCover from "../components/PostCover.astro";
 import SectionContainer from "../components/SectionContainer.astro";
 import SocialShareButtons from "../components/social-icons/SocialShareButtons.astro";
@@ -20,7 +21,7 @@ interface Props {
 
 const { post, next, prev } = Astro.props as Props;
 const authors: CollectionEntry<"authors">[] = await getEntries(
-  post.data.authors
+  post.data.authors,
 );
 const tags: CollectionEntry<"tags">[] = await getEntries(post.data.tags);
 
@@ -34,8 +35,6 @@ const articleOgDetails = {
 };
 
 const { Content, headings } = await render(post);
-
-
 ---
 
 <RootLayout
@@ -44,7 +43,7 @@ const { Content, headings } = await render(post);
   article={articleOgDetails}
 >
   <SectionContainer>
-    <ScrollTopAndComments client:only="react"  />
+    <ScrollTopAndComments client:only="react" />
     <article>
       <header>
         <div class="space-y-1 pb-10 text-center dark:border-gray-700">
@@ -130,6 +129,8 @@ const { Content, headings } = await render(post);
             <Content />
           </div>
 
+          <HireMeCTA />
+
           {
             ["bottom", "both"].includes(POST_METADATA.showShareButtons) ? (
               <SocialShareButtons
@@ -139,22 +140,23 @@ const { Content, headings } = await render(post);
             ) : null
           }
 
-          <script src="https://giscus.app/client.js"
-        data-repo="Kumneger0/kumneger.dev"
-        data-repo-id="R_kgDOMDEaXQ"
-        data-category="Ideas"
-        data-category-id="DIC_kwDOMDEaXc4CmR_P"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="1"
-        data-input-position="top"
-        data-theme="preferred_color_scheme"
-        data-lang="en"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
-</script>
+          <script
+            src="https://giscus.app/client.js"
+            data-repo="Kumneger0/kumneger.dev"
+            data-repo-id="R_kgDOMDEaXQ"
+            data-category="Ideas"
+            data-category-id="DIC_kwDOMDEaXc4CmR_P"
+            data-mapping="pathname"
+            data-strict="0"
+            data-reactions-enabled="1"
+            data-emit-metadata="1"
+            data-input-position="top"
+            data-theme="preferred_color_scheme"
+            data-lang="en"
+            data-loading="lazy"
+            crossorigin="anonymous"
+            async
+          ></script>
 
           <footer
             class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"
@@ -211,7 +213,7 @@ const { Content, headings } = await render(post);
 <script>
   function setupTOCHighlighting() {
     const headings = Array.from(
-      document.querySelectorAll("h1, h2, h3, h4, h5, h6")
+      document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
     );
 
     console.log("headings", headings);
@@ -258,7 +260,7 @@ const { Content, headings } = await render(post);
 
     const observer = new IntersectionObserver(
       observerCallback,
-      observerOptions
+      observerOptions,
     );
 
     headings.forEach((heading) => {
@@ -274,4 +276,3 @@ const { Content, headings } = await render(post);
 
   document.addEventListener("astro:page-load", setupTOCHighlighting);
 </script>
-

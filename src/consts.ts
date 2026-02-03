@@ -8,7 +8,7 @@ export const SITE_METADATA = {
   siteUrl: "https://kumneger.dev",
   siteRepo: "https://github.com/kumneger0/kumneger-app",
   robots: "index, follow",
-  email: "kumnegerwondimu@gmail.com",
+  email: "contact@kumneger.dev",
   twitter: "https://x.com/Kumneger0",
   linkedin: "https://www.linkedin.com/in/kumneger-wondimu-2b8405241/",
   github: "https://github.com/Kumneger0",
