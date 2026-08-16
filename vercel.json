@@ -5,6 +5,11 @@
             "source": "/about",
             "destination": "/",
             "permanent": true
+        }, 
+        {
+            "source": "/blog/:path*",
+            "destination": "/writings/:path*",
+            "permanent": true
         }
     ]
 }

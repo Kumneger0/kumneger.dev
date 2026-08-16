@@ -95,23 +95,36 @@ const { Content } = await render(post);
           ) : null
         }
 
-        <script
-          src="https://giscus.app/client.js"
-          data-repo="Kumneger0/kumneger.dev"
-          data-repo-id="R_kgDOMDEaXQ"
-          data-category="Ideas"
-          data-category-id="DIC_kwDOMDEaXc4CmR_P"
-          data-mapping="pathname"
-          data-strict="0"
-          data-reactions-enabled="1"
-          data-emit-metadata="1"
-          data-input-position="top"
-          data-theme="preferred_color_scheme"
-          data-lang="en"
-          data-loading="lazy"
-          crossorigin="anonymous"
-          async
-        ></script>
+        <div class="giscus-comments mt-12 pt-8 border-t border-gray-800/60">
+          <div class="giscus"></div>
+        </div>
+
+        <script is:inline>
+          function loadGiscus() {
+            const container = document.querySelector('.giscus');
+            if (!container) return;
+            container.innerHTML = '';
+            const script = document.createElement('script');
+            script.src = 'https://giscus.app/client.js';
+            script.setAttribute('data-repo', 'Kumneger0/kumneger.dev');
+            script.setAttribute('data-repo-id', 'R_kgDOMDEaXQ');
+            script.setAttribute('data-category', 'Ideas');
+            script.setAttribute('data-category-id', 'DIC_kwDOMDEaXc4CmR_P');
+            script.setAttribute('data-mapping', 'pathname');
+            script.setAttribute('data-strict', '0');
+            script.setAttribute('data-reactions-enabled', '1');
+            script.setAttribute('data-emit-metadata', '1');
+            script.setAttribute('data-input-position', 'top');
+            script.setAttribute('data-theme', 'transparent_dark');
+            script.setAttribute('data-lang', 'en');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            container.appendChild(script);
+          }
+
+          loadGiscus();
+          document.addEventListener('astro:page-load', loadGiscus);
+        </script>
 
         <footer
           class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700"
