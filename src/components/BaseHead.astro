@@ -104,13 +104,11 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
       meta: [
         {
           name: "theme-color",
-          content: "#fff",
-          media: "(prefers-color-scheme: light)",
+          content: "#030712",
         },
         {
-          name: "theme-color",
-          content: "#000",
-          media: "(prefers-color-scheme: dark)",
+          name: "color-scheme",
+          content: "#030712",
         },
         { name: "viewport", content: "width=device-width,initial-scale=1" },
       ],
@@ -168,6 +166,21 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
       }),
     }}
   />
+  <style is:inline>
+    html, body {
+      background-color: #030712 !important;
+      color: #f3f4f6 !important;
+      color-scheme: dark !important;
+    }
+  </style>
+  <script is:inline>
+    document.documentElement.classList.add('dark');
+    document.documentElement.style.backgroundColor = '#030712';
+    document.addEventListener('astro:before-swap', function (ev) {
+      ev.newDocument.documentElement.classList.add('dark');
+      ev.newDocument.documentElement.style.backgroundColor = '#030712';
+    });
+  </script>
   <ClientRouter />
   <meta
     name="google-site-verification"

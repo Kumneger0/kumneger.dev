@@ -9,14 +9,14 @@ const parser = new MarkdownIt();
 export const GET: APIRoute = async (context) => {
   const blog = await getCollection("blog");
   return rss({
-    title: "Kumneger’s Blog",
+    title: "Kumneger's Writings",
     description: SITE_METADATA.description,
     site: context.site ?? new URL(SITE_METADATA.siteUrl),
     items: blog.map((post) => ({
       title: post.data.title,
       pubDate: post.data.date,
       description: post.data.summary,
-      link: `/blog/${post.id}/`,
+      link: `/writings/${post.id}/`,
       ...(post.body
         ? {
             content: sanitizeHtml(parser.render(post.body), {

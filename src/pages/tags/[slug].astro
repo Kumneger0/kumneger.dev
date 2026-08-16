@@ -1,0 +1,62 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import ListWithTagsLayout from "@/layouts/ListLayout.astro";
+import Link from "@/components/Link.astro";
+
+interface Props {
+  entry: CollectionEntry<"tags">;
+  posts: CollectionEntry<"blog">[];
+}
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const tags = await getCollection("tags");
+  const posts = await getCollection("blog").then((blogs) =>
+    blogs.sort((a, b) => b.data?.date.valueOf() - a.data.date.valueOf())
+  );
+
+  return tags.map((entry) => {
+    const tagPosts = posts.filter((post) =>
+      post?.data?.tags.some(({ id }) => id === entry.id)
+    );
+    return {
+      params: { slug: entry.id },
+      props: { entry, posts: tagPosts },
+    };
+  });
+}
+
+const { entry, posts } = Astro.props;
+---
+
+<ListWithTagsLayout
+  title={`#${entry.id}`}
+  description={`Writings and notes tagged with #${entry.id}`}
+  posts={posts}
+>
+  <div class="mb-4">
+    <Link
+      href="/tags"
+      class="text-gray-400 hover:text-gray-200 text-sm flex items-center gap-1 font-mono transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>
+      All tags
+    </Link>
+  </div>
+  <p class="text-gray-400 text-base">
+    Writings and notes tagged with <span class="font-mono text-gray-200">#{entry.id}</span>.
+  </p>
+</ListWithTagsLayout>
