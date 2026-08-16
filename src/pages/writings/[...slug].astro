@@ -1,0 +1,30 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import BlogLayout from "../../layouts/BlogLayout.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  const paths = [];
+
+  for (const post of posts) {
+    paths.push({
+      params: { slug: post.id },
+      props: post,
+    });
+    if (post.id.toLowerCase() !== post.id) {
+      paths.push({
+        params: { slug: post.id.toLowerCase() },
+        props: post,
+      });
+    }
+  }
+
+  return paths;
+}
+
+type Props = CollectionEntry<"blog">;
+---
+
+<BlogLayout post={Astro.props} />

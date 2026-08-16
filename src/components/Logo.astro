@@ -1,13 +1,20 @@
 ---
-import { Image } from "astro:assets";
-import LogoImage from "@/assets/logo.svg";
+
 ---
 
-<Image
-  class={"text-black"}
-  src={LogoImage}
-  alt={"logo"}
-  widths={[40, 80]}
-  sizes={`(max-width: 640px) 40px, 80px`}
-  loading="eager"
-/>
+<span
+  class="text-xl md:text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 select-none"
+  aria-label="Home"
+>
+  root<span class="text-gray-400 dark:text-gray-500 font-normal">@dev</span><span class="animate-blink text-gray-400 dark:text-gray-500">_</span>
+</span>
+
+<style>
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .animate-blink {
+    animation: blink 1.2s step-end infinite;
+  }
+</style>

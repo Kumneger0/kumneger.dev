@@ -1,0 +1,22 @@
+---
+import ListLayout from "@/layouts/ListLayout.astro";
+import { getCollection } from "astro:content";
+
+export const prerender = true;
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date?.valueOf() - a.data.date?.valueOf()
+);
+---
+
+<ListLayout
+  title={"Writings"}
+  description={"Things I've learned while building"}
+  posts={posts}
+>
+  <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
+    Here I share things I've learned along the way — from projects I'm building,
+    problems I've run into, and ideas I've been thinking about. Nothing fancy,
+    just honest notes meant to be easy to read and follow.
+  </p>
+</ListLayout>

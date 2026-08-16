@@ -4,7 +4,7 @@ export const SITE_URL = "https://kumneger.dev";
 
 export const SITE_METADATA = {
   title: "Kumneger Wondimu",
-  theme: "system",
+  theme: "dark",
   siteUrl: "https://kumneger.dev",
   siteRepo: "https://github.com/kumneger0/kumneger-app",
   robots: "index, follow",
@@ -19,19 +19,19 @@ export const ITEMS_PER_PAGE = 5;
 
 export const NAVIGATION = [
   { href: "/", title: "home" },
-  { href: "/blog", title: "blog" },
+  { href: "/writings", title: "writings" },
   { href: "/tags", title: "tags" },
 ] as const;
 
 export const POST_METADATA = {
   defaultLayout: "column",
   showFullWidthCover: false,
-  showCover: true,
+  showCover: false,
   showTags: true,
   showDate: true,
   showSummary: true,
   showAuthors: true,
   showRelatedPosts: true,
-  showTableOfContents: true,
+  showTableOfContents: false,
   showShareButtons: "both",
 };

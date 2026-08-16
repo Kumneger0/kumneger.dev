@@ -1,2 +1,18 @@
 @import "tailwindcss";
 @config "../../tailwind.config.cjs";
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+html,
+body {
+  background-color: #030712;
+  color: #f3f4f6;
+  color-scheme: dark;
+}

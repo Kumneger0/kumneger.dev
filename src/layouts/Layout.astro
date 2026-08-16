@@ -20,10 +20,11 @@ type Props = {
 };
 ---
 
-<html lang={"en"} class="scroll-smooth">
+<html lang={"en"} class="dark scroll-smooth" style="background-color: #030712; color-scheme: dark;">
   <BaseHead {...Astro.props} />
   <body
-    class="bg-white text-black antialiased dark:bg-gray-950 dark:text-white"
+    class="bg-gray-950 text-gray-100 antialiased"
+    style="background-color: #030712; color: #f3f4f6;"
   >
     <Header />
     <div class="flex h-screen flex-col justify-between font-sans">

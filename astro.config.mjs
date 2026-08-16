@@ -6,39 +6,64 @@ import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import metaTags from "astro-meta-tags";
 import { defineConfig } from "astro/config";
+import { unified } from "@astrojs/markdown-remark";
 import { SITE_METADATA } from "./src/consts.ts";
 import robotsTxt from "astro-robots-txt";
-import inspectUrls from "@jsdevtools/rehype-url-inspector";
+
+/**
+ * @typedef {Object} HastNode
+ * @property {string} type
+ * @property {string} [tagName]
+ * @property {Record<string, unknown>} [properties]
+ * @property {HastNode[]} [children]
+ */
+
+/**
+ * 
+ * @returns {(tree: HastNode) => void}
+ */
+function rehypeExternalLinks() {
+  return (tree) => {
+    /**
+     * @param {HastNode} node
+     */
+    function walk(node) {
+      if (!node || typeof node !== "object") return;
+      if (node.type === "element" && node.tagName === "a" && node.properties) {
+        const href = node.properties.href;
+        if (
+          typeof href === "string" &&
+          (href.startsWith("http://") ||
+            href.startsWith("https://") ||
+            href.startsWith("//"))
+        ) {
+          node.properties.target = "_blank";
+          node.properties.rel = "noopener noreferrer";
+        }
+      }
+      if (Array.isArray(node.children)) {
+        for (const child of node.children) {
+          walk(child);
+        }
+      }
+    }
+
+    walk(tree);
+  };
+}
 
 // https://astro.build/config
 export default defineConfig({
   prefetch: true,
   site: SITE_METADATA.siteUrl,
+  markdown: {
+    processor: unified({
+      rehypePlugins: [rehypeExternalLinks],
+    }),
+  },
 
   integrations: [
-    mdx({
-      rehypePlugins: [
-        [
-          inspectUrls,
-          {
-            selectors: ["a[href]"],
-            /**
-             * @param {{ node: { properties: { href?: string; target?: string; rel?: string } } }} url
-             */
-            inspectEach(url) {
-              if (
-                url.node.properties.href &&
-                (url.node.properties.href.startsWith("http") ||
-                  url.node.properties.href.startsWith("//"))
-              ) {
-                url.node.properties.target = "_blank";
-                url.node.properties.rel = "noopener noreferrer";
-              }
-            },
-          },
-        ],
-      ],
-    }),
+    mdx(),
     sitemap(),
     metaTags(),
     robotsTxt(),
@@ -46,10 +71,10 @@ export default defineConfig({
       include: ["**/react/*"],
     }),
   ],
+  output:'static',
   vite: {
     plugins: [tailwindcss()],
   },
-  output: "static",
   adapter: vercel({ 
     webAnalytics: {
       enabled: true,

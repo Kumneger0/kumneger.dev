@@ -3,18 +3,18 @@
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist"],
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@layouts/*": ["./src/layouts/*"],
       "@public/*": ["./public/*"],
-      "@/react/*": ["src/components/react/*"]
+      "@/react/*": ["./src/components/react/*"]
     },
     "lib": [
       "DOM",
       "DOM.Iterable",
       "ESNext"
-    ]
-  }
+    ],
+  },
+  
 }
