@@ -1,0 +1,29 @@
+---
+title: yt-tracks rebuilding a tui music client
+date: "2026-08-25"
+summary: Spotify broke my app so I built something better instead.
+tags: ["go"]
+---
+
+
+Hey, folks, it's been a while since my last blog post, which was about clispot, the terminal-based Spotify client I wrote and why I built it. After I released clispot, a month or two later, Spotify made some big changes to their API that made clispot completely unusable. I had to use the official desktop app for a while, which I didn't like. I made a few changes to clispot, and today in this blog post, we're gonna talk about it.
+
+## Moving off Spotify
+
+The new Spotify requirement made it impossible to use their API. Previously, users had to create a new Spotify application in the Spotify Developer Dashboard and get a client ID and client secret, then put them in a `.bashrc` or `.zshrc` file. But with this new change, this approach no longer works because it now requires users to have Spotify Premium. The whole point of clispot was to make it possible to use it for free, so I was exploring a few alternatives. The best one I found was YouTube Music. It has a massive music catalog, and there is a popular Python library called [ytmusicapi](https://github.com/sigma67/ytmusicapi), which makes the process way easier.
+
+The app is now split into two parts: the TUI part, which is in Go, and the backend part, which is in Python. I didn't want to make it a multi-language project, but there isn't a well-maintained library other than [ytmusicapi](https://github.com/sigma67/ytmusicapi), so I had to use Python for that. The backend is straightforward: it accepts requests from our client and forwards them to YouTube Music using [ytmusicapi](https://github.com/sigma67/ytmusicapi). The backend and client communicates using [ConnectRPC](https://connectrpc.com/). If you don't know what [connectRPC](https://connectrpc.com/) is, basically it is like [gRPC](https://grpc.io/), but unlike GRPC it runs on HTTP/1.1, HTTP/2, and HTTP/3.
+
+## What’s new
+I renamed the project to yt-tracks; it describes the app better now that we use YouTube Music. I also removed the headless mode. We had a feature called headless that exposes http API, which allowed our [VS Code extension](https://marketplace.visualstudio.com/items?itemName=kumnegerwondimu.clispot) to control the music playback, the reason why i added that feature is that i want to control the music playback from my editor, now we have a separate backend, our vs code extension should talk to that instead 
+I haven't implemented the extension-side changes yet, but I'm gonna add that in a future release
+
+Previously, clispot works by fetching music metadata from Spotify and searching for the same song on YouTube. Most of the time this worked fine, but sometimes it found the wrong song; sometimes it didn't find the song at all, which was incredibly frustrating. With the new approach, this issue is completely solved.
+
+We also added synced lyrics. Users used to need to install a [separate program](https://github.com/Kumneger0/clispot-lyrics), which was a pretty awful experience. Now we use YouTube Music and [lrclib](https://lrclib.net/). If we can't find the lyrics on YouTube Music, we check lrclib.
+
+yt-tracks reads youtube music cookies from browser cookie stores for authentication, allowing it to display your YouTube Music libraries which is powered by [kooky](https://github.com/browserutils/kooky). This only runs with your permission you just have to run `yt-tracks extract-cookies`
+
+## Conclusion
+
+I hope you enjoyed this article. Let me know what you think in the comments section. Thanks for reading.
