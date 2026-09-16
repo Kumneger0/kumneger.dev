@@ -48,15 +48,6 @@ if (article?.cover) {
     width: 1200,
     height: 630,
   });
-} else {
-  const importedOgImage = await import(`../assets/og-image.png`).then(
-    (m) => m.default
-  );
-  openGraphImage = await getImage({
-    src: importedOgImage,
-    width: 1200,
-    height: 630,
-  });
 }
 
 const twitterCreator = article?.authorTwitter || creator?.data.twitter;
@@ -111,6 +102,39 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
           content: "#030712",
         },
         { name: "viewport", content: "width=device-width,initial-scale=1" },
+        ...(!openGraphImage
+          ? [
+              { property: "og:title", content: title },
+              { property: "og:type", content: article ? "article" : "website" },
+              { property: "og:url", content: Astro.url.href },
+              { property: "og:description", content: description },
+              { property: "og:locale", content: "en_US" },
+              ...(article?.publishedTime
+                ? [
+                    {
+                      property: "article:published_time",
+                      content: article.publishedTime.toISOString(),
+                    },
+                  ]
+                : []),
+              ...(article?.modifiedTime
+                ? [
+                    {
+                      property: "article:modified_time",
+                      content: article.modifiedTime.toISOString(),
+                    },
+                  ]
+                : []),
+              ...((article?.authors || []).map((a: string) => ({
+                property: "article:author",
+                content: a,
+              }))),
+              ...((article?.tags || []).map((t: string) => ({
+                property: "article:tag",
+                content: t,
+              }))),
+            ]
+          : []),
       ],
       link: [
         { rel: "icon", type: `image/svg`, href: favicon.src },
@@ -129,42 +153,46 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
     }}
     twitter={{
       ...((twitterCreator && {
-        card: "summary_large_image",
+        card: openGraphImage ? "summary_large_image" : "summary",
         creator: twitterCreator.replace("https://twitter.com/", "@"),
         title,
         description,
-        image: openGraphImage.src,
+        ...(openGraphImage ? { image: openGraphImage.src } : {}),
       }) ||
         {}),
     }}
-    openGraph={{
-      basic: {
-        type: "website",
-        url: Astro.url,
-        title,
-        image: openGraphImage.src,
-      },
-      image: {
-        url: openGraphImage.src,
-        type: `image/${openGraphImage.options.format}`,
-        width: openGraphImage.options.width,
-        height: openGraphImage.options.height,
-        alt: title,
-      },
-      optional: {
-        //@ts-ignore
-        locale: SITE_METADATA?.language,
-        description,
-      },
-      ...(article && {
-        article: {
-          publishedTime: article.publishedTime.toISOString(),
-          modifiedTime: article.modifiedTime?.toISOString(),
-          authors: article.authors,
-          tags: article.tags,
-        },
-      }),
-    }}
+    openGraph={
+      openGraphImage
+        ? {
+            basic: {
+              type: article ? "article" : "website",
+              url: Astro.url,
+              title,
+              image: openGraphImage.src,
+            },
+            image: {
+              url: openGraphImage.src,
+              type: `image/${openGraphImage.options.format}`,
+              width: openGraphImage.options.width,
+              height: openGraphImage.options.height,
+              alt: title,
+            },
+            optional: {
+              //@ts-ignore
+              locale: SITE_METADATA?.language,
+              description,
+            },
+            ...(article && {
+              article: {
+                publishedTime: article.publishedTime.toISOString(),
+                modifiedTime: article.modifiedTime?.toISOString(),
+                authors: article.authors,
+                tags: article.tags,
+              },
+            }),
+          }
+        : undefined
+    }
   />
   <style is:inline>
     html, body {
