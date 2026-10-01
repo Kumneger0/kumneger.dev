@@ -42,12 +42,14 @@ const favicon32 = await getImage({ src: Favicon, width: 32, height: 32 });
 const favicon16 = await getImage({ src: Favicon, width: 16, height: 16 });
 
 let openGraphImage;
+let ogImageAbsoluteUrl;
 if (article?.cover) {
   openGraphImage = await getImage({
     src: article.cover,
     width: 1200,
     height: 630,
   });
+  ogImageAbsoluteUrl = new URL(openGraphImage.src, Astro.site ?? Astro.url).href;
 }
 
 const twitterCreator = article?.authorTwitter || creator?.data.twitter;
@@ -154,10 +156,10 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
     twitter={{
       ...((twitterCreator && {
         card: openGraphImage ? "summary_large_image" : "summary",
-        creator: twitterCreator.replace("https://twitter.com/", "@"),
+        creator: twitterCreator.replace("https://twitter.com/", "@").replace("https://x.com/", "@"),
         title,
         description,
-        ...(openGraphImage ? { image: openGraphImage.src } : {}),
+        ...(openGraphImage ? { image: ogImageAbsoluteUrl } : {}),
       }) ||
         {}),
     }}
@@ -168,10 +170,10 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
               type: article ? "article" : "website",
               url: Astro.url,
               title,
-              image: openGraphImage.src,
+              image: ogImageAbsoluteUrl,
             },
             image: {
-              url: openGraphImage.src,
+              url: ogImageAbsoluteUrl,
               type: `image/${openGraphImage.options.format}`,
               width: openGraphImage.options.width,
               height: openGraphImage.options.height,
