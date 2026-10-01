@@ -64,7 +64,9 @@ export default defineConfig({
 
   integrations: [
     mdx(),
-    sitemap(),
+    sitemap({
+      filter: (page) => !page.match(/\/tags\/[^/]+\/?$/),
+    }),
     metaTags(),
     robotsTxt(),
     react({
