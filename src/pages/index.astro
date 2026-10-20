@@ -1,12 +1,23 @@
 ---
-import { getEntry, render } from "astro:content";
-import AuthorLayout from "../layouts/AuthorLayout.astro";
-
-const author = await getEntry("authors", "default");
-
-const { Content, headings } = await render(author!);
+import RootLayout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import FeaturedProjects from "../components/FeaturedProjects.astro";
+import AboutSection from "../components/AboutSection.astro";
+import ExperienceSection from "../components/ExperienceSection.astro";
+import RecentWritings from "../components/RecentWritings.astro";
+import ContactSection from "../components/ContactSection.astro";
+import Terminal from "../components/Terminal.astro";
+import { SITE_METADATA } from "@/consts";
 ---
 
-<AuthorLayout content={author?.data!} slug={author?.id as string}>
-  <Content />
-</AuthorLayout>
+<RootLayout title={SITE_METADATA.title} description={SITE_METADATA.description}>
+  <main>
+    <Hero />
+    <FeaturedProjects />
+    <AboutSection />
+    <ExperienceSection />
+    <RecentWritings />
+    <ContactSection />
+    <Terminal />
+  </main>
+</RootLayout>

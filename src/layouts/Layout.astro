@@ -3,6 +3,7 @@ import Header from "@/components/Header.astro";
 import type { CollectionEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
+import RecruiterExitModal from "../components/RecruiterExitModal.astro";
 
 type Props = {
   title: string;
@@ -20,16 +21,17 @@ type Props = {
 };
 ---
 
-<html lang={"en"} class="dark scroll-smooth" style="background-color: #030712; color-scheme: dark;">
+<html lang={"en"} class="dark scroll-smooth" style="background-color: #080a08; color-scheme: dark;">
   <BaseHead {...Astro.props} />
   <body
-    class="bg-gray-950 text-gray-100 antialiased"
-    style="background-color: #030712; color: #f3f4f6;"
+    class="bg-terminal-bg text-terminal-text antialiased"
+    style="background-color: #080a08; color: #f0f2ed;"
   >
     <Header />
-    <div class="flex h-screen flex-col justify-between font-sans">
+    <div class="flex min-h-screen flex-col justify-between font-sans">
       <slot />
       <Footer />
     </div>
+    <RecruiterExitModal />
   </body>
 </html>

@@ -1,0 +1,490 @@
+---
+import { SITE_METADATA } from "@/consts";
+
+const recruiterEmail = SITE_METADATA.email;
+---
+
+<!-- Recruiter / Hiring Manager Exit Intent Modal -->
+<div
+  id="recruiter-exit-modal"
+  transition:persist
+  class="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-all duration-200 ease-out"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="recruiter-modal-title"
+  aria-describedby="recruiter-modal-desc"
+>
+  <!-- Backdrop -->
+  <div
+    id="recruiter-modal-backdrop"
+    class="absolute inset-0 bg-black/85 backdrop-blur-md cursor-pointer transition-opacity duration-200"
+  >
+  </div>
+
+  <!-- Modal -->
+  <div
+    id="recruiter-modal-card"
+    class="relative w-full max-w-lg rounded-2xl border border-[#b6f09c]/30 bg-gradient-to-b from-[#101510] via-[#101510] to-[#080a08] p-6 sm:p-8 text-center text-[#f0f2ed] shadow-2xl shadow-[#b6f09c]/10 transform scale-95 transition-all duration-200 overflow-hidden"
+  >
+    <!-- Background Glow -->
+    <div
+      class="absolute -top-24 -left-24 h-48 w-48 rounded-full bg-[#b6f09c]/15 blur-3xl pointer-events-none"
+    >
+    </div>
+
+    <div
+      class="absolute -bottom-24 -right-24 h-48 w-48 rounded-full bg-[#b6f09c]/10 blur-3xl pointer-events-none"
+    >
+    </div>
+
+    <!-- Close Button -->
+    <button
+      id="recruiter-modal-x-btn"
+      type="button"
+      class="absolute top-4 right-4 rounded-full p-2 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 cursor-pointer"
+      aria-label="Close dialog"
+    >
+      <svg
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Badge -->
+    <div
+      class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-pink-500/10 text-pink-400 border border-pink-500/30 mb-4 animate-pulse"
+    >
+      <span>🚨</span>
+      <span>WAIT A SECOND...</span>
+    </div>
+
+    <!-- Headline -->
+    <h2
+      id="recruiter-modal-title"
+      class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2"
+    >
+      Leaving without hiring me? 👀
+    </h2>
+
+    <!-- Company -->
+    <p class="text-base sm:text-lg font-medium text-gray-200 mb-3">
+      Hey! I see you're visiting from
+      <span
+        id="recruiter-company-name"
+        class="text-pink-400 font-bold underline decoration-pink-500/60 decoration-wavy underline-offset-4"
+      >
+        your company
+      </span>.
+    </p>
+
+    <!-- Body -->
+    <div
+      id="recruiter-modal-desc"
+      class="text-sm sm:text-base text-gray-300 leading-relaxed space-y-3 mb-6"
+    >
+      <p>
+        Are you really about to close this tab? You're making a big mistake! 😉
+      </p>
+
+      <p class="text-gray-400 text-sm">
+        Your team at
+        <strong
+          id="recruiter-company-name-body"
+          class="text-pink-300 font-semibold"
+        >
+          your company
+        </strong>
+        deserves an engineer who builds fast, writes clean code, and—as you can tell—even
+        created this bespoke exit-trap just for you.
+      </p>
+
+      <p class="text-xs sm:text-sm text-pink-200/90 font-medium">
+        Before you ghost, let's at least have a quick chat!
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a
+        id="recruiter-hire-btn"
+        href={`mailto:${recruiterEmail}`}
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-pink-500/30 hover:from-pink-600 hover:to-rose-600 hover:shadow-pink-500/40 transition-all duration-200 transform hover:-translate-y-0.5 no-underline focus:outline-none focus:ring-2 focus:ring-pink-400 cursor-pointer"
+      >
+        <span>Let's Talk / Hire Me</span>
+        <span>🚀</span>
+      </a>
+
+      <button
+        id="recruiter-close-btn"
+        type="button"
+        class="w-full sm:w-auto inline-flex items-center justify-center rounded-xl border border-gray-800 bg-gray-800/80 px-4 py-3 text-xs sm:text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-600 cursor-pointer"
+      >
+        I like making big mistakes (Close)
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <p class="text-[11px] text-gray-500 mt-5 italic">
+      P.S. Yes, I personalized this specifically for
+      <span id="recruiter-company-name-footer">you</span>. Imagine what I could
+      build on your team.
+    </p>
+  </div>
+</div>
+
+<script is:inline define:vars={{ authorEmail: recruiterEmail }}>
+  (() => {
+    const STORAGE = {
+      COMPANY: "recruiter_company_name",
+      IS_RECRUITER: "recruiter_is_hiring_manager",
+      DISMISSED: "recruiter_exit_popup_dismissed",
+    };
+
+    const RECRUITER_PARAMS = [
+      "isHeEmployyerOrHireingManager",
+      "isHeEmployerOrHiringManager",
+      "isEmployerOrHiringManager",
+      "isHiringManager",
+      "isEmployer",
+      "recruiter",
+      "hiring",
+    ];
+
+    const COMPANY_PARAMS = [
+      "companyName",
+      "company_name",
+      "company",
+      "compName",
+    ];
+
+    let modalOpen = false;
+    let initialized = false;
+
+    function getParam(params, keys) {
+      for (const key of keys) {
+        const value = params.get(key);
+        if (value !== null) {
+          return value;
+        }
+      }
+
+      for (const [key, value] of params.entries()) {
+        const lowerKey = key.toLowerCase();
+        if (keys.some((target) => target.toLowerCase() === lowerKey)) {
+          return value;
+        }
+      }
+
+      return null;
+    }
+
+    function isTruthy(value) {
+      if (value === null) {
+        return false;
+      }
+
+      return (
+        value === "" ||
+        value.toLowerCase() === "true" ||
+        value === "1" ||
+        value.toLowerCase() === "yes" ||
+        value.toLowerCase() === "y"
+      );
+    }
+
+    /**
+     * Read recruiter information from the URL and persist to sessionStorage.
+     */
+    function initializeRecruiterSession() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const company = getParam(params, COMPANY_PARAMS);
+        const recruiter = getParam(params, RECRUITER_PARAMS);
+
+        if (company?.trim()) {
+          sessionStorage.setItem(STORAGE.COMPANY, company.trim());
+          sessionStorage.setItem(STORAGE.IS_RECRUITER, "true");
+        }
+
+        if (isTruthy(recruiter)) {
+          sessionStorage.setItem(STORAGE.IS_RECRUITER, "true");
+        }
+
+        // Debug parameter: ?debug=recruiter
+        if (params.get("debug") === "recruiter") {
+          sessionStorage.setItem(STORAGE.IS_RECRUITER, "true");
+          if (!sessionStorage.getItem(STORAGE.COMPANY)) {
+            sessionStorage.setItem(STORAGE.COMPANY, "Google");
+          }
+          sessionStorage.removeItem(STORAGE.DISMISSED);
+        }
+      } catch (error) {
+        console.error("Failed to initialize recruiter session:", error);
+      }
+    }
+
+    function getRecruiterData() {
+      try {
+        const isRecruiter =
+          sessionStorage.getItem(STORAGE.IS_RECRUITER) === "true";
+        const company = sessionStorage.getItem(STORAGE.COMPANY);
+
+        if (!isRecruiter || !company?.trim()) {
+          return null;
+        }
+
+        return {
+          isRecruiter: true,
+          companyName: company.trim(),
+        };
+      } catch {
+        return null;
+      }
+    }
+
+    function isDismissed() {
+      try {
+        return sessionStorage.getItem(STORAGE.DISMISSED) === "true";
+      } catch {
+        return false;
+      }
+    }
+
+    function dismiss() {
+      try {
+        sessionStorage.setItem(STORAGE.DISMISSED, "true");
+      } catch {}
+    }
+
+    function openModal() {
+      if (modalOpen || isDismissed()) {
+        return;
+      }
+
+      const recruiter = getRecruiterData();
+      if (!recruiter) {
+        return;
+      }
+
+      const modal = document.getElementById("recruiter-exit-modal");
+      const card = document.getElementById("recruiter-modal-card");
+      const companyEl = document.getElementById("recruiter-company-name");
+      const companyBodyEl = document.getElementById("recruiter-company-name-body");
+      const companyFooterEl = document.getElementById("recruiter-company-name-footer");
+      const hireButton = document.getElementById("recruiter-hire-btn");
+
+      if (!modal || !card) {
+        return;
+      }
+
+      const company = recruiter.companyName;
+
+      if (companyEl) companyEl.textContent = company;
+      if (companyBodyEl) companyBodyEl.textContent = company;
+      if (companyFooterEl) companyFooterEl.textContent = company;
+
+      if (hireButton) {
+        const subject = encodeURIComponent(`Opportunity at ${company} - Let's Talk!`);
+        const body = encodeURIComponent(
+          `Hi Kumneger,\n\n` +
+          `We saw your portfolio and custom exit popup for ${company}! ` +
+          `We would love to connect about potential opportunities.\n\n` +
+          `Best,\n`
+        );
+
+        hireButton.href = `mailto:${authorEmail}?subject=${subject}&body=${body}`;
+      }
+
+      modal.classList.remove("opacity-0", "pointer-events-none");
+      modal.classList.add("opacity-100", "pointer-events-auto");
+      card.classList.remove("scale-95");
+      card.classList.add("scale-100");
+
+      modalOpen = true;
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("recruiter-exit-modal");
+      const card = document.getElementById("recruiter-modal-card");
+
+      if (!modal || !card) {
+        return;
+      }
+
+      modal.classList.add("opacity-0", "pointer-events-none");
+      modal.classList.remove("opacity-100", "pointer-events-auto");
+      card.classList.add("scale-95");
+      card.classList.remove("scale-100");
+
+      modalOpen = false;
+      dismiss();
+    }
+
+    /**
+     * Exit-Intent detection that works for BOTH Horizontal and Vertical Tabs:
+     *
+     * 1. Horizontal tabs (top): cursor moves up towards top chrome (clientY <= 30 && movingUp)
+     * 2. Vertical tabs on LEFT (Firefox / Edge / Arc): cursor moves left towards sidebar (clientX <= 35 && movingLeft)
+     * 3. Vertical tabs on RIGHT (custom Edge / Firefox): cursor moves right towards sidebar (clientX >= innerWidth - 35 && movingRight)
+     * 4. Boundary exits: cursor leaves viewport towards top, left, or right edges.
+     * 5. BeforeUnload: catches tab close / Ctrl+W shortcuts.
+     */
+    function setupExitIntent() {
+      if (!window.matchMedia("(pointer: fine)").matches) {
+        return;
+      }
+
+      let lastMouseX = null;
+      let lastMouseY = null;
+
+      const handleMouseMove = (event) => {
+        if (modalOpen || isDismissed() || !getRecruiterData()) {
+          return;
+        }
+
+        const currentX = event.clientX;
+        const currentY = event.clientY;
+
+        const movingUp = lastMouseY !== null && currentY < lastMouseY;
+        const movingLeft = lastMouseX !== null && currentX < lastMouseX;
+        const movingRight = lastMouseX !== null && currentX > lastMouseX;
+
+        lastMouseX = currentX;
+        lastMouseY = currentY;
+
+        // 1. Horizontal Tabs (Top): cursor moving toward top bar
+        if (movingUp && currentY <= 30) {
+          openModal();
+          return;
+        }
+
+        // 2. Vertical Tabs on LEFT (Firefox native vertical tabs, Edge, Arc):
+        // cursor moving toward left tab sidebar
+        if (movingLeft && currentX <= 35) {
+          openModal();
+          return;
+        }
+
+        // 3. Vertical Tabs on RIGHT:
+        // cursor moving toward right tab sidebar
+        if (movingRight && currentX >= window.innerWidth - 35) {
+          openModal();
+          return;
+        }
+      };
+
+      // Boundary Exits: cursor leaves viewport towards tabs / sidebar
+      const handleMouseLeave = (event) => {
+        if (modalOpen || isDismissed() || !getRecruiterData()) {
+          return;
+        }
+
+        const x = event.clientX;
+        const y = event.clientY;
+        const width = window.innerWidth;
+
+        // Left boundary exit (vertical tabs on left)
+        const isLeftExit = x <= 50 || x == null;
+        // Top boundary exit (horizontal tabs)
+        const isTopExit = y <= 50 || y == null;
+        // Right boundary exit (vertical tabs on right)
+        const isRightExit = x >= width - 50;
+
+        if (isLeftExit || isTopExit || isRightExit) {
+          openModal();
+        }
+      };
+
+      const handleMouseOut = (event) => {
+        if (modalOpen || isDismissed() || !getRecruiterData()) {
+          return;
+        }
+
+        const to = event.relatedTarget || event.toElement;
+        if (!to) {
+          const x = event.clientX;
+          const y = event.clientY;
+          const width = window.innerWidth;
+
+          if (
+            (x <= 60 || x == null) ||
+            (y <= 60 || y == null) ||
+            x >= width - 60
+          ) {
+            openModal();
+          }
+        }
+      };
+
+      document.addEventListener("mousemove", handleMouseMove, { passive: true });
+      document.documentElement.addEventListener("mouseleave", handleMouseLeave);
+      window.addEventListener("mouseleave", handleMouseLeave);
+      window.addEventListener("mouseout", handleMouseOut);
+    }
+
+    function setupModalControls() {
+      const backdrop = document.getElementById("recruiter-modal-backdrop");
+      const closeButton = document.getElementById("recruiter-close-btn");
+      const xButton = document.getElementById("recruiter-modal-x-btn");
+
+      if (backdrop) backdrop.onclick = closeModal;
+      if (closeButton) closeButton.onclick = closeModal;
+      if (xButton) xButton.onclick = closeModal;
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modalOpen) {
+          closeModal();
+        }
+      });
+    }
+
+    function setupDebugHelpers() {
+      window.__showRecruiterExitModal = function (company) {
+        if (company) {
+          sessionStorage.setItem(STORAGE.IS_RECRUITER, "true");
+          sessionStorage.setItem(STORAGE.COMPANY, company);
+          sessionStorage.removeItem(STORAGE.DISMISSED);
+        }
+        openModal();
+      };
+
+      window.__resetRecruiterModal = function () {
+        sessionStorage.removeItem(STORAGE.DISMISSED);
+        modalOpen = false;
+        console.log("Recruiter exit modal reset.");
+      };
+    }
+
+    function init() {
+      if (initialized) {
+        return;
+      }
+      initialized = true;
+
+      initializeRecruiterSession();
+      setupExitIntent();
+      setupModalControls();
+      setupDebugHelpers();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init, { once: true });
+    } else {
+      init();
+    }
+
+    // Support Astro client router transitions
+    document.addEventListener("astro:page-load", () => {
+      initializeRecruiterSession();
+      setupModalControls();
+    });
+  })();
+</script>
