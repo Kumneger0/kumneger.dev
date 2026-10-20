@@ -1,0 +1,129 @@
+---
+---
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 pb-16">
+  <div class="rounded-xl border border-terminal-border bg-terminal-surface/50 overflow-hidden">
+    <!-- Terminal header -->
+    <div class="flex items-center gap-2 px-4 py-2.5 border-b border-terminal-border bg-terminal-bg/50">
+      <div class="flex gap-1.5">
+        <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+      </div>
+      <span class="font-mono text-[11px] text-terminal-muted ml-2">guest@kumneger.dev</span>
+    </div>
+
+    <!-- Terminal body -->
+    <div id="terminal-body" class="p-4 font-mono text-sm max-h-64 overflow-y-auto">
+      <div id="terminal-output">
+        <div class="text-terminal-muted text-xs mb-3">
+          Type <span class="text-terminal-accent">help</span> for available commands.
+        </div>
+      </div>
+      <div class="flex items-center">
+        <span class="text-terminal-accent mr-2 select-none">$</span>
+        <input
+          id="terminal-input"
+          type="text"
+          class="flex-1 bg-transparent border-none outline-none text-terminal-text font-mono text-sm p-0 focus:ring-0 focus:outline-none placeholder:text-terminal-muted/40"
+          placeholder="type a command..."
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Terminal command input"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const COMMANDS = {
+      help: () => [
+        '<span class="text-terminal-accent">Available commands:</span>',
+        '',
+        '  <span class="text-terminal-accent">help</span>      — Show this message',
+        '  <span class="text-terminal-accent">projects</span>  — List featured projects',
+        '  <span class="text-terminal-accent">about</span>     — Who am I',
+        '  <span class="text-terminal-accent">contact</span>   — How to reach me',
+        '  <span class="text-terminal-accent">clear</span>     — Clear terminal',
+      ],
+      projects: () => [
+        '<span class="text-terminal-accent">Featured Projects:</span>',
+        '',
+        '  <span style="color:#b6f09c">cligram</span>    — Telegram client for the terminal',
+        '               <a href="https://github.com/Kumneger0/cligram" target="_blank" rel="noopener" style="color:#aab3a7;text-decoration:underline">github</a> · <a href="https://cligram.kumneger.dev" target="_blank" rel="noopener" style="color:#aab3a7;text-decoration:underline">docs</a>',
+        '',
+        '  <span style="color:#b6f09c">yt-tracks</span>  — Terminal music player',
+        '               <a href="https://github.com/Kumneger0/yt-tracks" target="_blank" rel="noopener" style="color:#aab3a7;text-decoration:underline">github</a> · <a href="https://ytmusic-tui.kumneger.dev/" target="_blank" rel="noopener" style="color:#aab3a7;text-decoration:underline">docs</a>',
+        '',
+        '  <span style="color:#b6f09c">tgcloud</span>    — Cloud storage built on Telegram',
+        '               <a href="https://yourtgcloud.vercel.app/" target="_blank" rel="noopener" style="color:#aab3a7;text-decoration:underline">live</a>',
+      ],
+      about: () => [
+        '<span style="color:#b6f09c">About Me:</span>',
+        '',
+        '  Name:     Kumneger Wondimu',
+        '  Role:     Full-Stack Developer @ 2F Capital',
+        '  Stack:    TypeScript, Go, Next.js, React',
+        '  Location: Ethiopia',
+        '',
+        '  Started coding on a phone in 2018.',
+        '  BSc in Computer Science from Jimma University (2024).',
+      ],
+      contact: () => [
+        '<span style="color:#b6f09c">Contact:</span>',
+        '',
+        '  Email:    <a href="mailto:contact@kumneger.dev" style="color:#aab3a7;text-decoration:underline">contact@kumneger.dev</a>',
+        '  GitHub:   <a href="https://github.com/Kumneger0" target="_blank" rel="noopener" style="color:#aab3a7;text-decoration:underline">github.com/Kumneger0</a>',
+        '  Twitter:  <a href="https://x.com/Kumneger0" target="_blank" rel="noopener" style="color:#aab3a7;text-decoration:underline">x.com/Kumneger0</a>',
+        '  LinkedIn: <a href="https://www.linkedin.com/in/kumneger-wondimu-2b8405241/" target="_blank" rel="noopener" style="color:#aab3a7;text-decoration:underline">linkedin</a>',
+      ],
+    };
+
+    function setupTerminal() {
+      const input = document.getElementById('terminal-input');
+      const output = document.getElementById('terminal-output');
+      const body = document.getElementById('terminal-body');
+
+      if (!input || !output || !body) return;
+
+      // Avoid double-binding after Astro transitions
+      if (input.dataset.bound === 'true') return;
+      input.dataset.bound = 'true';
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        const cmd = input.value.trim().toLowerCase();
+        input.value = '';
+
+        if (!cmd) return;
+
+        // Echo the command
+        const cmdLine = document.createElement('div');
+        cmdLine.innerHTML = '<span style="color:#b6f09c">$</span> ' + cmd.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        output.appendChild(cmdLine);
+
+        if (cmd === 'clear') {
+          output.innerHTML = '';
+          return;
+        }
+
+        const handler = COMMANDS[cmd];
+        const lines = handler
+          ? handler()
+          : ['<span style="color:#aab3a7">Command not found: ' + cmd.replace(/</g, '&lt;') + '. Type <span style="color:#b6f09c">help</span> for available commands.</span>'];
+
+        const block = document.createElement('div');
+        block.classList.add('mb-3');
+        block.innerHTML = lines.join('<br/>');
+        output.appendChild(block);
+
+        body.scrollTop = body.scrollHeight;
+      });
+    }
+
+    setupTerminal();
+    document.addEventListener('astro:page-load', setupTerminal);
+  })();
+</script>

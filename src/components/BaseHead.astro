@@ -97,11 +97,11 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
       meta: [
         {
           name: "theme-color",
-          content: "#030712",
+          content: "#080a08",
         },
         {
           name: "color-scheme",
-          content: "#030712",
+          content: "#080a08",
         },
         { name: "viewport", content: "width=device-width,initial-scale=1" },
         ...(!openGraphImage
@@ -198,17 +198,17 @@ const twitterCreator = article?.authorTwitter || creator?.data.twitter;
   />
   <style is:inline>
     html, body {
-      background-color: #030712 !important;
-      color: #f3f4f6 !important;
+      background-color: #080a08 !important;
+      color: #f0f2ed !important;
       color-scheme: dark !important;
     }
   </style>
   <script is:inline>
     document.documentElement.classList.add('dark');
-    document.documentElement.style.backgroundColor = '#030712';
+    document.documentElement.style.backgroundColor = '#080a08';
     document.addEventListener('astro:before-swap', function (ev) {
       ev.newDocument.documentElement.classList.add('dark');
-      ev.newDocument.documentElement.style.backgroundColor = '#030712';
+      ev.newDocument.documentElement.style.backgroundColor = '#080a08';
     });
   </script>
   <ClientRouter />

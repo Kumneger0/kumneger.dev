@@ -2,6 +2,12 @@
 @config "../../tailwind.config.cjs";
 
 :root {
+  --bg: #080a08;
+  --surface: #101510;
+  --text: #f0f2ed;
+  --text-secondary: #aab3a7;
+  --accent: #b6f09c;
+  --border: #1e2a1e;
   color-scheme: dark;
 }
 
@@ -12,7 +18,46 @@ html {
 
 html,
 body {
-  background-color: #030712;
-  color: #f3f4f6;
+  background-color: var(--bg);
+  color: var(--text);
   color-scheme: dark;
+}
+
+::selection {
+  background-color: rgba(182, 240, 156, 0.2);
+  color: var(--text);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Smooth scroll for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
