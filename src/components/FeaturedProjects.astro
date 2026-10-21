@@ -16,7 +16,6 @@ const projects = [
     title: "yt-tracks",
     description: "I originally built Clispot because I wanted to listen to music from my terminal without needing Spotify Premium. It worked — until Spotify changed its API requirements and broke the way Clispot accessed music data.",
     context: "Instead of giving up on the idea, I switched to YouTube Music and rebuilt it as yt-tracks.",
-    backstory: true,
     backstoryLinks: [
       { text: "yt-tracks: rebuilding a TUI music client", href: "/writings/yt-tracks" },
       { text: "Why Clispot stopped working", href: "https://clispot.kumneger.dev/deprecation-notice" },
@@ -92,34 +91,22 @@ const projects = [
             </div>
 
             <p class="text-terminal-muted leading-relaxed">{project.description}</p>
+            <p class="text-sm text-terminal-muted/80 leading-relaxed">{project.context}</p>
 
-            {project.backstory ? (
-              <details class="group/details">
-                <summary class="text-sm text-terminal-accent/70 cursor-pointer hover:text-terminal-accent transition-colors duration-200 select-none list-none flex items-center gap-1.5 font-mono">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 group-open/details:rotate-90 shrink-0">
-                    <path d="m9 18 6-6-6-6"/>
-                  </svg>
-                  read the full story
-                </summary>
-                <div class="mt-3 pl-[18px] space-y-3 border-l border-terminal-border">
-                  <p class="text-sm text-terminal-muted/80 leading-relaxed">{project.context}</p>
-                  <div class="flex flex-col gap-1.5">
-                    {project.backstoryLinks.map((link) => (
-                      <a
-                        href={link.href}
-                        target={link.href.startsWith("/") ? undefined : "_blank"}
-                        rel={link.href.startsWith("/") ? undefined : "noopener noreferrer"}
-                        class="inline-flex items-center gap-1.5 text-xs text-terminal-accent/70 hover:text-terminal-accent transition-colors duration-200 no-underline font-mono"
-                      >
-                        <span>→</span>
-                        {link.text}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </details>
-            ) : (
-              <p class="text-sm text-terminal-muted/80 leading-relaxed">{project.context}</p>
+            {project.backstoryLinks && (
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1">
+                {project.backstoryLinks.map((link) => (
+                  <a
+                    href={link.href}
+                    target={link.href.startsWith("/") ? undefined : "_blank"}
+                    rel={link.href.startsWith("/") ? undefined : "noopener noreferrer"}
+                    class="inline-flex items-center gap-1.5 text-xs text-terminal-accent/80 hover:text-terminal-accent transition-colors duration-200 no-underline font-mono"
+                  >
+                    <span>→</span>
+                    <span class="hover:underline">{link.text}</span>
+                  </a>
+                ))}
+              </div>
             )}
 
             <div class="flex flex-wrap gap-2 pt-1">
