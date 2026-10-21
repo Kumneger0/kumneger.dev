@@ -2,7 +2,7 @@
   function createProgressBar() {
     const progressContainer = document.createElement("div");
     progressContainer.className =
-      "progress-container fixed bg-transparent top-0 z-10 h-1 w-full";
+      "progress-container fixed bg-transparent top-0 z-[60] h-1 w-full";
 
     const progressBar = document.createElement("div");
     progressBar.className = "progress-bar h-1 w-0 bg-green-600";
@@ -35,12 +35,13 @@
     let codeBlocks = Array.from(document.querySelectorAll("pre"));
 
     for (let codeBlock of codeBlocks) {
+      if (codeBlock.querySelector(".copy-code")) continue;
       let wrapper = document.createElement("div");
       wrapper.style.position = "relative";
 
       let copyButton = document.createElement("button");
       copyButton.className =
-        "copy-code absolute right-3 z-[99999] top-0 rounded bg-green-600 px-2 py-1 text-xs leading-4 text-white text-skin-base font-medium";
+        "copy-code absolute right-3 z-10 top-0 rounded bg-green-600 px-2 py-1 text-xs leading-4 text-white text-skin-base font-medium";
       copyButton.innerHTML = copyButtonLabel;
       codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);
@@ -68,4 +69,5 @@
     }
   }
   attachCopyButtons();
+  document.addEventListener("astro:page-load", attachCopyButtons);
 </script>
