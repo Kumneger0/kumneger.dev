@@ -7,13 +7,19 @@ cover: "../../assets/server-sent-events.jpeg"
 summary: Server-Sent Events allow servers to send updates without a client making a request to the server.
 ---
 
+Server-Sent Events let us send updates from the server to the client without making requests every few seconds. In this post, we'll use SSE to build a small group chat and see how it works.
+
 ## what is server sent events
 
-Server-Sent Events (SSE) is a server push technology that allows servers to send real-time updates to web clients over a single, long-lived HTTP connection
+Let's say you want to show updates on a page as soon as something changes on the server. One way to do this is to keep asking the server for new data, but that means making requests even when nothing has changed.
+
+With Server-Sent Events (SSE), the client opens a connection to the server, and the server can send updates through that connection whenever there's something new.
 
 ## SSE vs Web Sockets
 
-Server-Sent Events (SSE) provide one-way communication from server to client, while WebSockets enable two-way, full-duplex communication where both the client and server can send and receive messages
+The main difference between SSE and WebSockets is how they send data. With SSE, the server sends updates to the client, while WebSockets allow both the client and server to send messages to each other over the same connection.
+
+For our group chat, we'll use SSE to receive new messages and notify users when someone joins or leaves. Sending messages from the client will be handled by a normal HTTP request.
 
 ## Example Project
 
